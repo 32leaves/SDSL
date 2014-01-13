@@ -1,0 +1,30 @@
+// iFragCount
+// iGlobalTime
+// iFragID
+// iResolution
+// nl_FragCoord
+
+float foobar(vec2 resolution, float foo) {
+    if(foo == 42) {
+        while(foo > 3) {
+            foo--;
+        }
+
+        return 1;
+    } else {
+        for(int i = 0; i < 100; i++) {
+            foo++;
+        }
+
+        return resolution;
+    }
+}
+
+void main() {
+    float scale = 10.0;
+    float angle = ((2 * PI) / iFragCount) * (scale * iGlobalTime - iFragID);
+    float dx = iResolution.x * 0.5;
+    float dy = iResolution.y * 0.5;
+
+    nl_FragCoord = vec3(dx + dx * cos(angle), dy + dy * sin(angle), 0.0);
+}

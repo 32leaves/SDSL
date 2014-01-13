@@ -1,0 +1,183 @@
+
+grammar NLSL
+
+  ##################
+  # Program structure
+
+  rule program
+    block+ <Program>
+  end
+
+  rule block
+    comment / functiondef / space / linebreak
+  end
+
+  rule functiondef
+    rettype space identifier '(' funcargdefs? ')' space? '{' funcbody?  space? '}' <FunctionDefinition>
+  end
+
+  rule funcargdefs
+    funcargdef (',' space? funcargdef)*
+  end
+
+  rule funcargdef
+    vartype space identifier <FunctionArgumentDefinition>
+  end
+
+  rule funcbody
+    (statement+ <FunctionBody>)
+  end
+
+  rule statement
+    space? ( unary_assignment / assignment / if / while / for / return / comment ) ';'? space? linebreak? <Statement>
+  end
+
+  ##################
+  # Literals
+
+  rule number
+    ('+' / '-')? [0-9]+ ('.' [0-9]+)? <NumberLiteral>
+  end
+
+  rule identifier
+    [a-zA-Z] [a-zA-Z0-9_]* <Identifier>
+  end
+
+  ##################
+  # Assignment
+
+  rule unary_assignment
+    ( (unary_operator identifier) / (identifier unary_operator) ) <UnaryAssignment>
+  end
+
+  rule assignment
+    (vartype space)? identifier space? '=' space? ( expression ) <Assignment>
+  end
+
+  rule rettype
+    'void' <TypeExpression> / vartype
+  end
+
+  rule vartype
+    ('float' / 'int' / 'vec2' / 'vec3' / 'vec4') <TypeExpression>
+  end
+
+  ##################
+  # Flow control
+
+  rule if
+    'if(' space? comparative space? ')' space '{'
+      funcbody
+    space? '}' space? ifelse? <If>
+  end
+
+  rule ifelse
+    'else' space '{' funcbody '}'
+  end
+
+  rule while
+    'while(' space? comparative space? ')' space '{'
+      funcbody
+    space? '}' space? <While>
+  end
+
+  rule for
+    'for(' space? assignment ';' space? comparative ';' space? (assignment / unary_assignment) space? ')' space '{'
+      funcbody
+    space? '}' space? <For>
+  end
+
+  rule return
+    'return' space expression <Return>
+  end
+
+  ##################
+  # Expressions
+
+  rule expression
+    space? (additive) <Expression>
+  end
+
+  rule comparative
+    primary space? comparative_operator space? primary <OperationalExpression>
+  end
+
+  rule additive
+    multitive space? additive_operator space? additive <OperationalExpression>
+    /
+    multitive
+  end
+
+  rule multitive
+    primary space? multitive_operator space? multitive <OperationalExpression>
+    /
+    primary
+  end
+
+  rule primary
+    funccall / varref / number
+    /
+    '(' space? expression space? ')' <Expression>
+  end
+
+  rule funccall
+    identifier '(' funcargs? ')' <FunctionCall>
+  end
+
+  rule funcargs
+    expression ( ',' space? expression )* <FunctionArguments>
+  end
+
+  rule varref
+    identifier vectorcomp? <VariableRef>
+  end
+
+  rule vectorcomp
+    ('.xyz' / '.xy' / '.x' / '.y' / '.z' / '.w') <VectorComponent>
+  end
+
+  ##################
+  # Operator sets
+
+  rule comparative_operator
+     ( '==' / '!=' / '>' / '<' ) <Operator>
+  end
+
+  rule additive_operator
+    ( '+' / '-' ) <Operator>
+  end
+
+  rule multitive_operator
+    ( '*' / '/' ) <Operator>
+  end
+
+  rule unary_operator
+    ( '++' / '--') <Operator>
+  end
+
+  ##################
+  # Comments
+
+  rule comment
+    '//' [^"\n"]* ( "\n" / end_of_file ) <Comment>
+  end
+
+  ##################
+  # Whitespace
+
+  rule space
+    [\s]+
+  end
+
+  rule linebreak
+   [\n]+
+  end
+
+  ##################
+  # End of file
+
+  rule end_of_file
+    !.
+  end
+
+end

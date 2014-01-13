@@ -1,0 +1,4 @@
+
+void main() {
+    nl_FragColor = vec4(iFragCoord.x / iResolution.x, iFragCoord.y / iResolution.y, 0.5, 0.5);
+}
