@@ -1,11 +1,13 @@
 module NLSL
-  module Transformer
+  module Compiler
 
-
+    #
+    # The root scope: those variables exist by default and serve as interface to the runtime environment
+    #
     ROOT_SCOPE = NLSE::Scope.new(nil,
       :nl_FragColor => :vec4,
       :nl_FragCoord => :vec3,
-      :iResolution => :vec2,
+      :iResolution => :vec3,
       :iFragCount => :int,
       :iFragCoord => :vec3,
       :iGlobalTime => :int,
@@ -17,6 +19,9 @@ module NLSL
       arguments = types.each_with_index.inject({}) {|m, v| m[v.last] = NLSE::Value.new(:type => v.first, :value => nil, :ref => false); m }
       NLSE::Function.new(:name => name, :arguments => arguments, :type => rettype, :body => [], :builtin => true)
     end
+    #
+    # The root registration of built-in functions. These functions have to be supported by the runtime
+    #
     BUILTIN_FUNCTIONS = {
         "vec4" => [
             _mkbfunc("vec4", [ :float, :float, :float, :float ], :vec4),
@@ -110,6 +115,9 @@ module NLSL
       "> vec2 vec2" => NLSE::CompGreaterVector,
     }
 
+    #
+    # All vector components, their result type and to which vector they're applicable
+    #
     VECTOR_COMPONENTS = {
       :x => [ :float, [ :vec4, :vec3, :vec2 ] ],
       :y => [ :float, [ :vec4, :vec3, :vec2 ] ],
@@ -119,6 +127,9 @@ module NLSL
       :xyz => [ :vec3, [ :vec4 ] ]
     }
 
+    #
+    # Transforms an NLSL AST into NLSE code, performs type-checking and linking in the process
+    #
     class Transformer
 
       def transform(element, scope = ROOT_SCOPE.clone, program = nil)
@@ -191,9 +202,10 @@ module NLSL
         if element.type.nil?
           throw "Unknown variable #{name}" if not scope.include?(name)
           unless value.nil?
-            throw "Type mismatch for variable \"#{name}\": #{value.type} != #{scope[name]}" if scope[name] != value.type and not value.type.nil?
+            throw "Type mismatch for variable \"#{name}\": #{value.type} != #{scope[name]}" if scope[name] != value.type
           end
         else
+          throw "Type mismatch for variable \"#{name}\": #{element.type} != #{value.type}" if element.type.to_sym != value.type
           scope.register_variable(name, element.type.to_sym)
         end
 

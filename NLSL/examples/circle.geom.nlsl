@@ -23,8 +23,8 @@ float foobar(vec2 resolution, float foo) {
 void main() {
     float scale = 10.0;
     float angle = ((2 * PI) / iFragCount) * (scale * iGlobalTime - iFragID);
-    float dx = iResolution.x * 0.5;
-    float dy = iResolution.y * 0.5;
+    vec3 dp = iResolution * 0.5;
 
-    nl_FragCoord = vec3(dx + dx * cos(angle), dy + dy * sin(angle), 0.0);
+    vec3 r = vec3(dp.x + dp.x * cos(angle), dp.y + dp.y * sin(angle), 10.0);
+    nl_FragCoord = r
 }

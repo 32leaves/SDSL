@@ -1,3 +1,9 @@
+#
+# NLSL = NanoLite Shader Language
+#
+# This contains modules which are attached to the AST during parsing. They provide an API to traverse
+# the resulting AST in a semantic manner. Specs for these modules are in the AST_*_spec.rb files.
+#
 module NLSL
 
   module Program

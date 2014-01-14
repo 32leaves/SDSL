@@ -1,5 +1,12 @@
 require 'constructor'
 
+#
+# NLSE = NanoLite Shader Execution representation
+#
+# This module contains an intermediary representation of the shader code. Types have been resolved (typically by NLSL Compiler)
+# so all expressions are typed. Code represented as NLSE is supposed to be transformed to the respective
+# runtime environments using target transformers.
+#
 module NLSE
 
   class Comment
@@ -18,25 +25,13 @@ module NLSE
     constructor :name, :value, :accessors => true
   end
 
-  class Vector2Initialization
-    constructor :x, :y, :accessors => true
-  end
-
-  class Vector3Initialization
-    constructor :x, :y, :z, :accessors => true
-  end
-
-  class Vector4Initialization
-    constructor :x, :y, :z, :w, :accessors => true
-  end
-
   class VectorMulVector
     constructor :a, :b, :signature, :accessors => true
 
     def self.strict_types?; false; end
 
     def type
-      return signature.split(" ").last
+      signature.split(" ").last.to_sym
     end
   end
 
@@ -46,7 +41,7 @@ module NLSE
     def self.strict_types?; false; end
 
     def type
-      return signature.split(" ").last
+      signature.split(" ").last.to_sym
     end
   end
 
@@ -56,7 +51,7 @@ module NLSE
     def self.strict_types?; true; end
 
     def type
-      return signature.split(" ").last
+      signature.split(" ").last.to_sym
     end
   end
 
@@ -66,7 +61,7 @@ module NLSE
     def self.strict_types?; false; end
 
     def type
-      return signature.split(" ").sort.last
+      signature.split(" ").sort.last.to_sym
     end
   end
 
@@ -76,7 +71,7 @@ module NLSE
     def associative?; false; end
 
     def type
-      return signature.split(" ").sort.last
+      signature.split(" ").sort.last.to_sym
     end
   end
 
@@ -86,7 +81,7 @@ module NLSE
     def self.strict_types?; false; end
 
     def type
-      return signature.include?("float") ? "float" : "int"
+      signature.include?("float") ? :float : :int
     end
   end
 
@@ -96,7 +91,7 @@ module NLSE
     def self.strict_types?; false; end
 
     def type
-      return signature.include?("float") ? "float" : "int"
+      signature.include?("float") ? :float : :int
     end
   end
 
@@ -106,7 +101,7 @@ module NLSE
     def self.strict_types?; false; end
 
     def type
-      return signature.include?("float") ? "float" : "int"
+      signature.include?("float") ? :float : :int
     end
   end
 
@@ -116,7 +111,7 @@ module NLSE
     def self.strict_types?; false; end
 
     def type
-      return signature.include?("float") ? "float" : "int"
+      signature.include?("float") ? :float : :int
     end
   end
 
