@@ -9,11 +9,11 @@ describe 'AST Function Definition parser' do
   end
 
   it 'should parse return types' do
-    parse('int main() { }').content.first.return_type == 'int'
+    parse('int main() { }').content.first.return_type.should eq 'int'
   end
 
   it 'should parse names' do
-    parse('int main() { }').content.first.name == 'main'
+    parse('int main() { }').content.first.name.should eq 'main'
   end
 
   it 'should parse function bodies' do

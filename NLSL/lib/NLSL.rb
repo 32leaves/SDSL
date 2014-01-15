@@ -22,6 +22,18 @@ module NLSL
 
   end
 
+  module UniformDefinition
+
+    def name
+      elements.select {|e| e.is_a?(Identifier) }.first.value
+    end
+
+    def type
+      vartype.text_value
+    end
+
+  end
+
   module FunctionArguments
 
     def content

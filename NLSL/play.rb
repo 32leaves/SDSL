@@ -5,6 +5,7 @@ require './lib/NLSE.rb'
 require './lib/NLSLtoNLSE.rb'
 require './lib/class.treetopHelper.rb'
 require './lib/target.ruby.rb'
+require './lib/target.c.rb'
 
 Treetop.load('lib/NLSLParser')
 
@@ -24,8 +25,8 @@ end
 gradient = p2xml(File.new('examples/gradient.color.nlsl').readlines.join, '/tmp/ast_gradient.xml')
 circle = p2xml(File.new('examples/circle.geom.nlsl').readlines.join, '/tmp/ast_circle.xml')
 
-g_se = NLSL::Compiler::Transformer.new.transform(gradient)
-g_cl = NLSL::Compiler::Transformer.new.transform(circle)
+g_se = NLSL::Compiler::Transformer.new(:color).transform(gradient)
+g_cl = NLSL::Compiler::Transformer.new(:geometry).transform(circle)
 
 begin
   rb_se = NLSE::Target::Ruby::Transformer.new.transform g_se
@@ -41,5 +42,7 @@ end
 resolution = NLSE::Target::Ruby::Runtime::Vec3.new(100, 100, 100)
 cl = NLSE::Target::Ruby::GeometryShader.new(g_cl).execute(0, resolution, 16, 1)
 se = NLSE::Target::Ruby::ColorShader.new(g_se).execute(0, resolution, cl)
+
+puts NLSE::Target::C::Transformer.new.transform(g_cl)
 
 pry

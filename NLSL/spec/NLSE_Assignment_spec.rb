@@ -40,9 +40,9 @@ describe 'NLSE Assignment' do
   end
 
   it 'should resolve unary assignments' do
-    scope = NLSL::Compiler::ROOT_SCOPE.clone
+    scope = NLSE::Scope.new
     scope.register_variable(:foo, :int)
-    r = tr('foo++', NLSE::SpecHelper::TR_UASSIGNMENT, scope)
+    r = tr('foo++', NLSE::SpecHelper::TR_UASSIGNMENT, nil, scope)
     r.should be_a NLSE::VariableAssignment
     r.name.should be :foo
     r.value.should be_a NLSE::ScalarAddScalar

@@ -2,18 +2,26 @@ module NLSL
   module Compiler
 
     #
-    # The root scope: those variables exist by default and serve as interface to the runtime environment
+    # The set of uniforms that are common to all shader types
     #
-    ROOT_SCOPE = NLSE::Scope.new(nil,
-      :nl_FragColor => :vec4,
-      :nl_FragCoord => :vec3,
-      :iResolution => :vec3,
-      :iFragCount => :int,
-      :iFragCoord => :vec3,
-      :iGlobalTime => :int,
-      :iFragID => :int,
-      :PI => :float
-    )
+    _COMMON_BUILTIN_UNIFORMS = [
+      NLSE::Uniform.new(:name => :iGlobalTime, :type => :float),
+      NLSE::Uniform.new(:name => :iResolution, :type => :vec3)
+    ]
+    #
+    # The set of uniforms per shader type
+    #
+    BUILTIN_UNIFORMS = {
+        :geometry => _COMMON_BUILTIN_UNIFORMS + [
+          NLSE::Uniform.new(:name => :iFragCount, :type => :int),
+          NLSE::Uniform.new(:name => :iFragID, :type => :int),
+          NLSE::Uniform.new(:name => :nl_FragCoord, :type => :vec3),
+        ],
+        :color => _COMMON_BUILTIN_UNIFORMS + [
+          NLSE::Uniform.new(:name => :iFragCoord, :type => :vec3),
+          NLSE::Uniform.new(:name => :nl_FragColor, :type => :vec4),
+        ]
+    }
 
     def self._mkbfunc(name, types, rettype)
       arguments = types.each_with_index.inject({}) {|m, v| m[v.last] = NLSE::Value.new(:type => v.first, :value => nil, :ref => false); m }
@@ -22,40 +30,24 @@ module NLSL
     #
     # The root registration of built-in functions. These functions have to be supported by the runtime
     #
-    BUILTIN_FUNCTIONS = {
-        "vec4" => [
-            _mkbfunc("vec4", [ :float, :float, :float, :float ], :vec4),
-            _mkbfunc("vec4", [ :vec2, :float, :float ], :vec4),
-            _mkbfunc("vec4", [ :vec3, :float ], :vec4),
-        ],
-        "vec3" => [
-            _mkbfunc("vec3", [ :float, :float, :float ], :vec3),
-            _mkbfunc("vec3", [ :vec2, :float ], :vec3)
-        ],
-        "vec2" => [
-            _mkbfunc("vec2", [ :float, :float ], :vec2),
-        ],
-        "mat4" => [
-            _mkbfunc("mat4", 16.times.map { :float }, :mat4),
-            _mkbfunc("mat4", [ :vec4, :vec4, :vec4, :vec4 ], :mat4),
-        ],
-        "mat3" => [
-            _mkbfunc("mat3", 9.times.map { :float }, :mat3),
-            _mkbfunc("mat3", [ :vec3, :vec3, :vec3 ], :mat3),
-        ],
-        "mat2" => [
-            _mkbfunc("mat2", [ :float, :float, :float, :float ], :mat2),
-            _mkbfunc("mat2", [ :vec2, :vec2 ], :mat2),
-        ],
-        "cos" => [
-            _mkbfunc("cos", [ :float ], :float),
-            _mkbfunc("cos", [ :int ], :float),
-        ],
-        "sin" => [
-            _mkbfunc("sin", [ :float ], :float),
-            _mkbfunc("sin", [ :int ], :float),
-        ]
-    }
+    BUILTIN_FUNCTIONS = [
+      _mkbfunc("vec4", [ :float, :float, :float, :float ], :vec4),
+      _mkbfunc("vec4", [ :vec2, :float, :float ], :vec4),
+      _mkbfunc("vec4", [ :vec3, :float ], :vec4),
+      _mkbfunc("vec3", [ :float, :float, :float ], :vec3),
+      _mkbfunc("vec3", [ :vec2, :float ], :vec3),
+      _mkbfunc("vec2", [ :float, :float ], :vec2),
+      _mkbfunc("mat4", 16.times.map { :float }, :mat4),
+      _mkbfunc("mat4", [ :vec4, :vec4, :vec4, :vec4 ], :mat4),
+      _mkbfunc("mat3", 9.times.map { :float }, :mat3),
+      _mkbfunc("mat3", [ :vec3, :vec3, :vec3 ], :mat3),
+      _mkbfunc("mat2", [ :float, :float, :float, :float ], :mat2),
+      _mkbfunc("mat2", [ :vec2, :vec2 ], :mat2),
+      _mkbfunc("cos", [ :float ], :float),
+      _mkbfunc("cos", [ :int ], :float),
+      _mkbfunc("sin", [ :float ], :float),
+      _mkbfunc("sin", [ :int ], :float),
+    ]
 
     #######
     ## Signature convention for enabling non-strict types:
@@ -186,12 +178,19 @@ module NLSL
     #
     class Transformer
 
-      def transform(element, scope = ROOT_SCOPE.clone, program = nil)
-        _error element, "Scope is not a NLSE::Scope" if not scope.is_a? NLSE::Scope
+      def initialize(shader_type)
+        throw "Unknown shader type #{shader_type}" unless shader_type == :color or shader_type == :geometry
+        @shader_type = shader_type
+      end
+
+      def transform(element, scope = nil, program = nil)
+        _error element, "Scope is not a NLSE::Scope" unless scope.is_a? NLSE::Scope or scope.nil?
         _error element, "Program is not a NLSE::Program" unless program.is_a?(NLSE::Program) or program.nil?
 
         if(element.is_a? Program)
           transform_program(element, scope, program)
+        elsif element.is_a? UniformDefinition
+          transform_uniform(element, scope, program)
         elsif element.is_a? FunctionDefinition
           transform_function(element, scope, program)
         elsif element.is_a? FunctionArgumentDefinition
@@ -226,8 +225,14 @@ module NLSL
       end
 
       def transform_program(element, scope, program)
-        r = NLSE::Program.new(:root_scope => scope, :functions => BUILTIN_FUNCTIONS.clone)
-        element.content.each {|c| transform(c, scope, r) }
+        r = NLSE::Program.new(BUILTIN_FUNCTIONS, BUILTIN_UNIFORMS[@shader_type])
+        element.content.each {|c| transform(c, r.root_scope, r) }
+        r
+      end
+
+      def transform_uniform(element, scope, program)
+        r = NLSE::Uniform.new(:name => element.name.to_sym, :type => element.type.to_sym)
+        program.register_uniform(r)
         r
       end
 

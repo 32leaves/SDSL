@@ -26,8 +26,9 @@ float foobar(vec2 resolution, float foo) {
 }
 
 void main() {
+    float pi = 3.14169;
     float scale = 10.0;
-    float angle = ((2 * PI) / iFragCount) * (scale * iGlobalTime - iFragID);
+    float angle = ((2 * pi) / iFragCount) * (scale * iGlobalTime - iFragID);
     vec3 dp = iResolution * 0.5;
 
     vec3 r = vec3(dp.x + dp.x * cos(angle), dp.y + dp.y * sin(angle), 10.0);

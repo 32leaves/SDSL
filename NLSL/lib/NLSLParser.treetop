@@ -9,7 +9,11 @@ grammar NLSL
   end
 
   rule block
-    comment / functiondef / space / linebreak
+    comment / functiondef / uniformdef / space / linebreak
+  end
+
+  rule uniformdef
+    'uniform' space vartype space identifier space? ';' <UniformDefinition>
   end
 
   rule functiondef

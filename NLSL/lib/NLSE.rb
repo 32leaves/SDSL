@@ -177,6 +177,10 @@ module NLSE
     constructor :a, :b, :signature, :accessors => true
   end
 
+  class Uniform
+    constructor :name, :type, :accessors => true
+  end
+
   class Function
     constructor :name, :arguments, :type, :body, :builtin, :accessors => true
 
@@ -211,7 +215,21 @@ module NLSE
   end
 
   class Program
-    constructor :root_scope, :functions, :accessors => true
+    attr_reader :root_scope, :functions, :uniforms
+
+    def initialize(functions = [], uniforms = [])
+      @root_scope = Scope.new(nil)
+      @functions = {}
+      @uniforms = {}
+
+      functions.each {|f| register_function f }
+      uniforms.each {|u| register_uniform u }
+    end
+
+    def register_uniform(uniform)
+      uniforms[uniform.name] = uniform
+      root_scope.register_variable(uniform.name, uniform.type)
+    end
 
     def register_function(func)
       functions[func.name] ||= []
@@ -221,7 +239,7 @@ module NLSE
   end
 
   class Scope
-    def initialize(parent, *initial)
+    def initialize(parent = nil, *initial)
       @parent = parent
       @local = initial.first || {}
     end

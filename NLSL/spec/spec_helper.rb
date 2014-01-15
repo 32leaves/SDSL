@@ -20,18 +20,21 @@ module NLSE::SpecHelper
 
   TR_ROOT = [ :transform, 'program' ]
   TR_FUNCDEF = [ :transform_function, 'functiondef' ]
+  TR_UNIFORMDEF = [ :transform_uniform, 'uniformdef' ]
   TR_ASSIGNMENT = [ :transform_assignment, 'assignment' ]
   TR_UASSIGNMENT = [ :transform_unaryassignment, 'unary_assignment' ]
 
-  def tr(s, conf = TR_ROOT, scope = NLSL::Compiler::ROOT_SCOPE.clone, &block)
+  def tr(s, conf = TR_ROOT, program = nil, scope = nil, &block)
+    throw "program is not an NLSE::Program" unless program.nil? or program.is_a? NLSE::Program
     start, root = conf
 
     p = parse(s, root)
     raise "Parse failed: #{@p.failure_reason}" if p.nil?
 
-    program = NLSE::Program.new(:root_scope => scope, :functions => NLSL::Compiler::BUILTIN_FUNCTIONS.clone)
+    program ||= NLSE::Program.new(NLSL::Compiler::BUILTIN_FUNCTIONS, [])
+    scope ||= program.root_scope
 
-    transformer = NLSL::Compiler::Transformer.new
+    transformer = NLSL::Compiler::Transformer.new(:geometry)
     result = transformer.send(start, p, scope, program)
 
     yield result, transformer, scope, program if block_given?
