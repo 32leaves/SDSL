@@ -35,6 +35,18 @@ module NLSL
         "vec2" => [
             _mkbfunc("vec2", [ :float, :float ], :vec2),
         ],
+        "mat4" => [
+            _mkbfunc("mat4", 16.times.map { :float }, :mat4),
+            _mkbfunc("mat4", [ :vec4, :vec4, :vec4, :vec4 ], :mat4),
+        ],
+        "mat3" => [
+            _mkbfunc("mat3", 9.times.map { :float }, :mat3),
+            _mkbfunc("mat3", [ :vec3, :vec3, :vec3 ], :mat3),
+        ],
+        "mat2" => [
+            _mkbfunc("mat2", [ :float, :float, :float, :float ], :mat2),
+            _mkbfunc("mat2", [ :vec2, :vec2 ], :mat2),
+        ],
         "cos" => [
             _mkbfunc("cos", [ :float ], :float),
             _mkbfunc("cos", [ :int ], :float),
@@ -56,6 +68,18 @@ module NLSL
     ##
     OPERATIONS = {
       # mul and div
+      "* mat4 mat4" => NLSE::MatMulMat,
+      "* mat3 mat3" => NLSE::MatMulMat,
+      "* mat2 mat2" => NLSE::MatMulMat,
+      "* mat4 vec4" => NLSE::MatMulVector,
+      "* mat3 vec3" => NLSE::MatMulVector,
+      "* mat2 vec2" => NLSE::MatMulVector,
+      "* mat4 float" => NLSE::MatMulScalar,
+      "* mat4 int" => NLSE::MatMulScalar,
+      "* mat3 float" => NLSE::MatMulScalar,
+      "* mat3 int" => NLSE::MatMulScalar,
+      "* mat2 float" => NLSE::MatMulScalar,
+      "* mat2 int" => NLSE::MatMulScalar,
       "* vec4 float" => NLSE::VectorMulScalar,
       "* vec4 int" => NLSE::VectorMulScalar,
       "/ vec4 float" => NLSE::VectorDivScalar,
@@ -128,13 +152,43 @@ module NLSL
     }
 
     #
+    # Maps how column wise matrix access translates to vectors for which matrix type
+    # and how many columns a matrix type has
+    #
+    MATRIX_ARRAY_ACCESS = {
+      :mat4 => [4, :vec4],
+      :mat3 => [3, :vec3],
+      :mat2 => [2, :vec2]
+    }
+
+    #
+    # Error class raised in case of a compiler error
+    #
+    class CompilerError < StandardError
+      constructor :message, :context, :accessors => true
+
+      def line
+        @context.input[0..@context.interval.begin].count("\n") + 1
+      end
+
+      def message
+        to_s
+      end
+
+      def to_s
+        "#{@message}\nSomewhere in line #{line} near: #{@context.text_value}\n\n"
+      end
+
+    end
+
+    #
     # Transforms an NLSL AST into NLSE code, performs type-checking and linking in the process
     #
     class Transformer
 
       def transform(element, scope = ROOT_SCOPE.clone, program = nil)
-        throw "Scope is not a NLSE::Scope" if not scope.is_a? NLSE::Scope
-        throw "Program is not a NLSE::Program" unless program.is_a?(NLSE::Program) or program.nil?
+        _error element, "Scope is not a NLSE::Scope" if not scope.is_a? NLSE::Scope
+        _error element, "Program is not a NLSE::Program" unless program.is_a?(NLSE::Program) or program.nil?
 
         if(element.is_a? Program)
           transform_program(element, scope, program)
@@ -200,12 +254,12 @@ module NLSL
         value = transform(element.expression, scope, program)
 
         if element.type.nil?
-          throw "Unknown variable #{name}" if not scope.include?(name)
+          _error element, "Unknown variable #{name}" if not scope.include?(name)
           unless value.nil?
-            throw "Type mismatch for variable \"#{name}\": #{value.type} != #{scope[name]}" if scope[name] != value.type
+            _error element, "Type mismatch for variable \"#{name}\": #{value.type} != #{scope[name]}" if scope[name] != value.type
           end
         else
-          throw "Type mismatch for variable \"#{name}\": #{element.type} != #{value.type}" if element.type.to_sym != value.type
+          _error element, "Type mismatch for variable \"#{name}\": #{value.type} != #{element.type}" if element.type.to_sym != value.type
           scope.register_variable(name, element.type.to_sym)
         end
 
@@ -214,10 +268,10 @@ module NLSL
 
       def transform_unaryassignment(element, scope, program)
         name = element.name.to_sym
-        throw "Unknown variable #{name}" if not scope.include?(name)
+        _error element, "Unknown variable #{name}" if not scope.include?(name)
 
         type = scope[name]
-        throw "Unary assignments only exist for scalar types" unless type == :float or type == :int
+        _error element, "Unary assignments only exist for scalar types" unless type == :float or type == :int
         op    = element.operator == "++" ? NLSE::ScalarAddScalar : NLSE::ScalarSubScalar
         opsig = element.operator[-1]
 
@@ -229,7 +283,7 @@ module NLSL
       end
 
       def transform_opexp(element, scope, program)
-        throw "OpExp with more than two factors are not yet supported" if element.factors.length > 2
+        _error element, "OpExp with more than two factors are not yet supported" if element.factors.length > 2
 
         factors = element.factors.map {|e| transform(e, scope, program) }
 
@@ -243,7 +297,7 @@ module NLSL
           nonstrict_signature = "#{element.operator} #{types.first} #{types.last}"
           op = OPERATIONS[nonstrict_signature]
 
-          throw "Invalid operation: #{signature}" if op.nil? or op.strict_types?
+          _error element, "Invalid operation: #{signature}" if op.nil? or op.strict_types?
         end
 
         op.new(:a => factors.first, :b => factors.last, :signature => signature)
@@ -255,15 +309,25 @@ module NLSL
 
       def transform_varref(element, scope, program)
         name = element.value.to_sym
-        throw "Unknown variable: #{name}" if not scope.include?(name)
+        _error element, "Unknown variable: #{name}" if not scope.include?(name)
 
         type = scope[name]
         result = NLSE::Value.new(:type => type, :value => name, :ref => true)
 
+        array = element.array
+        if not array.nil?
+          access_spec = MATRIX_ARRAY_ACCESS[type]
+          _error element, "Array access is only valid for mat2, mat3 or mat4" if access_spec.nil?
+          _error element, "Column index out of bounds #{array} > #{type}" if array >= access_spec.first
+
+          type = access_spec.last
+          result = NLSE::MatrixColumnAccess.new(:type => type, :value => result, :index => array)
+        end
+
         component = element.component
         if not component.nil?
           componentLookup = VECTOR_COMPONENTS[component.to_sym]
-          throw "Invalid vector component: #{type}.#{component}" if not componentLookup.last.include?(type)
+          _error element, "Invalid vector component: #{type}.#{component}" if not componentLookup.last.include?(type)
 
           result = NLSE::ComponentAccess.new(:type => componentLookup.first, :value => result, :component => component.to_sym)
         end
@@ -274,7 +338,7 @@ module NLSL
       def transform_funccal(element, scope, program)
         name = element.name
         funcs = program.functions[name]
-        throw "Unknown function: #{name}" if funcs.nil?
+        _error element, "Unknown function: #{name}" if funcs.nil?
         funcs = funcs.inject({}) do |m, func|
           signature = func.arguments.values.map {|a| a.type.to_s }.join(", ")
           m[signature] = func
@@ -284,14 +348,14 @@ module NLSL
         arguments = element.arguments.map {|a| transform(a, scope, program) }
         signature = arguments.map {|a| a.type.to_s }.join(", ")
         function = funcs[signature]
-        throw "No function #{name}(#{signature}) found. Candidates are: #{funcs.keys.map {|s| "#{name}(#{s})" }}" if function.nil?
+        _error element, "No function #{name}(#{signature}) found. Candidates are: #{funcs.keys.map {|s| "#{name}(#{s})" }}" if function.nil?
 
         NLSE::FunctionCall.new(:name => name, :arguments => arguments, :type => function.type)
       end
 
       def transform_if(element, scope, program)
         condition = transform(element.condition, scope, program)
-        throw "Conditional must be a comparative expression: #{element.condition}" unless condition.is_a? NLSE::Condition
+        _error element, "Conditional must be a comparative expression: #{element.condition}" unless condition.is_a? NLSE::Condition
 
         then_scope = scope.branch
         then_body = element.then_body.map {|e| transform(e, then_scope, program) }
@@ -306,7 +370,7 @@ module NLSL
 
       def transform_while(element, scope, program)
         condition = transform(element.condition, scope, program)
-        throw "Conditional must be a comparative expression: #{element.condition}" unless condition.is_a? NLSE::Condition
+        _error element, "Conditional must be a comparative expression: #{element.condition}" unless condition.is_a? NLSE::Condition
 
         nuscope = scope.branch
         body = element.body.content.map {|e| transform(e, nuscope, program) }
@@ -318,7 +382,7 @@ module NLSL
         initialization = transform(element.initialization, nuscope, program)
         iterator = transform(element.iterator, nuscope, program)
         condition = transform(element.condition, nuscope, program)
-        throw "Conditional must be a comparative expression: #{element.condition}" unless condition.is_a? NLSE::Condition
+        _error element, "Conditional must be a comparative expression: #{element.condition}" unless condition.is_a? NLSE::Condition
 
         body = element.body.content.map {|e| transform(e, nuscope, program) }
 
@@ -327,6 +391,10 @@ module NLSL
 
       def transform_return(element, scope, program)
         NLSE::Return.new(:value => transform(element.expression, scope, program))
+      end
+
+      def _error(element, msg)
+        raise CompilerError.new(:context => element, :message => msg)
       end
 
     end

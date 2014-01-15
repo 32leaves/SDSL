@@ -5,9 +5,14 @@
 // nl_FragCoord
 
 float foobar(vec2 resolution, float foo) {
+    mat4 tr = mat4(1.0, 0.0, 0.0, 0.0,
+                   0.0, 1.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 0.0,
+                   0.0, 0.0, 0.0, 1.0);
+
     if(foo == 42) {
         while(foo > 3) {
-            foo--;
+            foo = tr[1].x;
         }
 
         return 1;

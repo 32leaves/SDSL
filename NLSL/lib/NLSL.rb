@@ -93,6 +93,14 @@ module NLSL
 
   end
 
+  module Array
+
+    def value
+      text_value[1..-2].to_i
+    end
+
+  end
+
   module VectorComponent
 
     def value
@@ -241,6 +249,11 @@ module NLSL
 
     def component
       r = elements.select {|e| e.is_a? VectorComponent }.first
+      r.nil? ? nil : r.value
+    end
+
+    def array
+      r = elements.select {|e| e.is_a? Array }.first
       r.nil? ? nil : r.value
     end
 

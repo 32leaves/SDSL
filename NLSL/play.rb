@@ -27,8 +27,16 @@ circle = p2xml(File.new('examples/circle.geom.nlsl').readlines.join, '/tmp/ast_c
 g_se = NLSL::Compiler::Transformer.new.transform(gradient)
 g_cl = NLSL::Compiler::Transformer.new.transform(circle)
 
-rb_se = NLSE::Target::Ruby::Transformer.new.transform g_se
-rb_cl = NLSE::Target::Ruby::Transformer.new.transform g_cl
+begin
+  rb_se = NLSE::Target::Ruby::Transformer.new.transform g_se
+rescue ArgumentErrorcl => e
+  puts e
+end
+begin
+  rb_cl = NLSE::Target::Ruby::Transformer.new.transform g_cl
+rescue ArgumentError => e
+  puts e
+end
 
 resolution = NLSE::Target::Ruby::Runtime::Vec3.new(100, 100, 100)
 cl = NLSE::Target::Ruby::GeometryShader.new(g_cl).execute(0, resolution, 16, 1)

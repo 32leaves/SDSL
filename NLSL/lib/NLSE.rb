@@ -21,8 +21,42 @@ module NLSE
     constructor :type, :value, :component, :accessors => true
   end
 
+  class MatrixColumnAccess
+    constructor :type, :value, :index, :accessors => true
+  end
+
   class VariableAssignment
     constructor :name, :value, :accessors => true
+  end
+
+  class MatMulMat
+    constructor :a, :b, :signature, :accessors => true
+
+    def self.strict_types?; false; end
+
+    def type
+      signature.split(" ").last.to_sym
+    end
+  end
+
+  class MatMulVector
+    constructor :a, :b, :signature, :accessors => true
+
+    def self.strict_types?; true; end
+
+    def type
+      signature.split(" ").last.to_sym
+    end
+  end
+
+  class MatMulScalar
+    constructor :a, :b, :signature, :accessors => true
+
+    def self.strict_types?; false; end
+
+    def type
+      signature.split(" ").last.to_sym
+    end
   end
 
   class VectorMulVector
@@ -208,6 +242,10 @@ module NLSE
 
     def branch
       Scope.new(self)
+    end
+
+    def clone
+      Scope.new(@parent, @local.clone)
     end
 
   end

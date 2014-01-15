@@ -59,7 +59,7 @@ grammar NLSL
   end
 
   rule vartype
-    ('float' / 'int' / 'vec2' / 'vec3' / 'vec4') <TypeExpression>
+    ('float' / 'int' / 'vec2' / 'vec3' / 'vec4' / 'mat2' / 'mat3' / 'mat4') <TypeExpression>
   end
 
   ##################
@@ -129,7 +129,11 @@ grammar NLSL
   end
 
   rule varref
-    identifier vectorcomp? <VariableRef>
+    identifier array? vectorcomp? <VariableRef>
+  end
+
+  rule array
+    '[' ([0-9]+) ']' <Array>
   end
 
   rule vectorcomp

@@ -212,6 +212,10 @@ module NLSE
           "#{transform root.value}.#{root.component}"
         end
 
+        def transform_matrixcolumnaccess(root)
+          "#{transform root.value}[#{root.index}]"
+        end
+
         def transform_functioncall(root)
           "#{root.name}(#{transform root.arguments, ", "})"
         end
