@@ -109,16 +109,35 @@ module NLSE
       end
 
       #
+      # Base class for ruby environment shaders
+      #
+      class Shader
+
+        def initialize(nlse)
+          @nlse = nlse
+          @compiled = Transformer.new.transform(nlse)
+        end
+
+        def bind_uniform(name, value)
+          raise "Unknown uniform: #{name}" if @nlse.uniforms[name].nil?
+          instance_variable_set("@#{name}", value)
+          self.class.__send__(:attr_accessor, name)
+          self
+        end
+
+      end
+
+      #
       # Serves as interface between geometry shader code and the rest of the world
       #
-      class GeometryShader
+      class GeometryShader < Shader
         include Runtime
 
         attr_reader :iGlobalTime, :iResolution, :iFragID, :iFragCount
         attr_writer :nl_FragCoord
 
         def initialize(nlse)
-          @compiled = Transformer.new.transform(nlse)
+          super
         end
 
         def execute(time, resolution, fragCount, fragID)
@@ -138,14 +157,14 @@ module NLSE
       #
       # Serves as interface between color shader code and the rest of the world
       #
-      class ColorShader
+      class ColorShader < Shader
         include Runtime
 
         attr_reader :iGlobalTime, :iResolution, :iFragCoord
         attr_writer :nl_FragColor
 
         def initialize(nlse)
-          @compiled = Transformer.new.transform(nlse)
+          super
         end
 
         def execute(time, resolution, fragCoord)

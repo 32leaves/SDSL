@@ -41,7 +41,7 @@ end
 
 resolution = NLSE::Target::Ruby::Runtime::Vec3.new(100, 100, 100)
 cl = NLSE::Target::Ruby::GeometryShader.new(g_cl).execute(0, resolution, 16, 1)
-se = NLSE::Target::Ruby::ColorShader.new(g_se).execute(0, resolution, cl)
+se = NLSE::Target::Ruby::ColorShader.new(g_se).bind_uniform(:bluetone, 0.7).execute(0, resolution, cl)
 
 puts NLSE::Target::C::Transformer.new.transform(g_cl)
 
