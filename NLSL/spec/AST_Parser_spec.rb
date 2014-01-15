@@ -27,15 +27,6 @@ describe 'NLSL primitives' do
     parse("vec4 foo = xyz(bar, 4);", 'statement').should_not be_nil
     parse("foo(bar)", 'statement').should be_nil
   end
-
-  it 'should parse vector components' do
-    parse("foo.x", 'expression').should_not be_nil
-    parse("foo.y", 'expression').should_not be_nil
-    parse("foo.z", 'expression').should_not be_nil
-    parse("foo.w", 'expression').should_not be_nil
-    parse("foo.xy", 'expression').should_not be_nil
-    parse("foo.xyz", 'expression').should_not be_nil
-  end
   
   it 'should parse assignments' do
     parse("float bar = 1", 'assignment').should_not be_nil
