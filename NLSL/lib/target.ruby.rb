@@ -12,6 +12,10 @@ module NLSE
         class Vec2
           attr_accessor :x, :y
 
+          def self.zero
+            Vec2.new(0.0, 0.0)
+          end
+
           def initialize(x, y)
             @x = x
             @y = y
@@ -28,9 +32,23 @@ module NLSE
           def /(other)
             Vec2.new(x / other, y / other)
           end
+
+          def +(other)
+            if other.is_a? Vec2
+              Vec2.new(x + other.x, y + other.y)
+            end
+          end
+
+          def to_a
+            [ x, y ]
+          end
         end
         class Vec3
           attr_accessor :x, :y, :z
+
+          def self.zero
+            Vec3.new(0.0, 0.0, 0.0)
+          end
 
           def initialize(x, y, z = nil)
             if z.nil?
@@ -60,9 +78,23 @@ module NLSE
             Vec3.new(x / other, y / other, z / other)
           end
 
+          def +(other)
+            if other.is_a? Vec3
+              Vec3.new(x + other.x, y + other.y, z + other.z)
+            end
+          end
+
+          def to_a
+            [ x, y, z ]
+          end
+
         end
         class Vec4
           attr_accessor :x, :y, :z, :w
+
+          def self.zero
+            Vec4.new(0.0, 0.0, 0.0, 0.0)
+          end
 
           def initialize(x, y, z = nil, w = nil)
             if z.nil?
@@ -98,14 +130,82 @@ module NLSE
             end
           end
 
+          def +(other)
+            if other.is_a? Vec4
+              Vec4.new(x + other.x, y + other.y, z + other.z, w + other.w)
+            end
+          end
+
           def /(other)
             Vec4.new(x / other, y / other, z / other, w / other)
           end
+
+          def to_a
+            [ x, y, z, w ]
+          end
+
         end
+
+        #
+        # A matrix class representing values in column wise order. So a matrix
+        #   1 0 0
+        #   0 0 2
+        #   0 3 0
+        # is stored as 1 0 0, 0 0 3, 0 2 0 and NOT 1 0 0, 0 0 2, 0 3 0
+        #
+        class Mat
+          attr_reader :m
+
+          def initialize(size, values)
+            throw "Not enough values" unless values.length >= size**2
+
+            @size = size
+            @m = values
+          end
+
+          def [](idx)
+            args = @m[(idx * @size)...((idx + 1) * @size)]
+            vector_type.send(:new, *args)
+          end
+
+          def *(other)
+            if other.is_a? vector_type
+              trans = transpose
+              values = (0...@size).map {|e| self[e] * other }
+              vector_type.send(:new, *values)
+            elsif other.is_a? Numeric
+              @m = @m.map {|e| e * other }
+            else
+              throw "Cannot multiply a matrix with #{other}"
+            end
+          end
+
+          def vector_type
+            case @size
+              when 2 then Vec2
+              when 3 then Vec3
+              when 4 then Vec4
+            end
+          end
+
+          def transpose
+            newvalues = (0...@size).map {|row| (0...@size).map {|col| @m[(col * @size) + row] } }.flatten
+            Mat.new(@size, newvalues)
+          end
+
+          def to_s
+            (0...@size).map {|row| (0...@size).map {|col| @m[(col * @size) + row] }.join(" ") }.join("\n")
+          end
+
+        end
+
 
         def vec2(x, y); Vec2.new(x, y); end
         def vec3(x, y, z = nil); Vec3.new(x, y, z); end
         def vec4(x, y, z = nil, w = nil); Vec4.new(x, y, z, w); end
+        def mat2(*args); Mat.new(2, args); end
+        def mat3(*args); Mat.new(3, args); end
+        def mat4(*args); Mat.new(4, args); end
       end
 
       #
