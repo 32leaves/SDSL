@@ -22,4 +22,13 @@ describe 'NLSE Uniforms' do
     end
   end
 
+  it 'should find used/unused uniforms' do
+    tr('uniform float foo;', NLSE::SpecHelper::TR_ROOT) do |result, transformer, scope, program|
+      result.uniforms.should have_at_least(1).item
+
+      result.used_uniforms.should have_at_most(result.uniforms.values.length - 1).items
+      result.used_uniforms.any? {|e| e.name == :foo }.should be false
+    end
+  end
+
 end

@@ -54,9 +54,6 @@ module NLSL
     ##   - types ordered in reverse alphabetical order
     ##   - operator comes first
     ##
-    ## strictness means that an operator only makes sense when types are in a certain order (e.g., vec div scalar)
-    ## associativity means that an operator can be applied to an arbitrary operand order (e.g., vec mul vec)
-    ## strictness is a stronger condition that associativity (e.g., scalar div scalar is not-strict and not associative, however scalar mul scalar is also non-strict but associative )
     ##
     OPERATIONS = {
       # mul and div

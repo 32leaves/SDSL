@@ -11,145 +11,108 @@ module NLSE
 
   class Comment
     constructor :value, :accessors => true
+
+    def __children; [ ]; end
   end
 
   class Value
     constructor :type, :value, :ref, :accessors => true
+
+    def __children; [ ]; end
   end
 
   class ComponentAccess
     constructor :type, :value, :component, :accessors => true
+
+    def __children; [ value ]; end
   end
 
   class MatrixColumnAccess
     constructor :type, :value, :index, :accessors => true
+
+    def __children; [ value ]; end
   end
 
   class VariableAssignment
     constructor :name, :value, :accessors => true
+
+    def __children; [ value ]; end
   end
 
-  class MatMulMat
+  #
+  # Base class for all binary operations
+  #
+  class Op
     constructor :a, :b, :signature, :accessors => true
 
+    def __children; [ a, b ]; end
+
+    #
+    # True if this operator requires strict typing
+    #
+    # strictness means that an operator only makes sense when types are in a certain order (e.g., vec div scalar)
+    # associativity means that an operator can be applied to an arbitrary operand order (e.g., vec mul vec)
+    # strictness is a stronger condition that associativity (e.g., scalar div scalar is not-strict and not associative, however scalar mul scalar is also non-strict but associative)
+    #
     def self.strict_types?; false; end
-
-    def type
-      signature.split(" ").last.to_sym
-    end
   end
 
-  class MatMulVector
-    constructor :a, :b, :signature, :accessors => true
-
-    def self.strict_types?; true; end
-
-    def type
-      signature.split(" ").last.to_sym
-    end
-  end
-
-  class MatMulScalar
-    constructor :a, :b, :signature, :accessors => true
-
-    def self.strict_types?; false; end
-
-    def type
-      signature.split(" ").last.to_sym
-    end
-  end
-
-  class VectorMulVector
-    constructor :a, :b, :signature, :accessors => true
-
-    def self.strict_types?; false; end
-
-    def type
-      signature.split(" ").last.to_sym
-    end
-  end
-
-  class VectorAddVector
-    constructor :a, :b, :signature, :accessors => true
-
-    def self.strict_types?; false; end
-
-    def type
-      signature.split(" ").last.to_sym
-    end
-  end
-
-  class VectorSubVector
-    constructor :a, :b, :signature, :accessors => true
-
-    def self.strict_types?; true; end
-
-    def type
-      signature.split(" ").last.to_sym
-    end
-  end
-
-  class VectorMulScalar
-    constructor :a, :b, :signature, :accessors => true
-
-    def self.strict_types?; false; end
-
+  #
+  # Base class for all binary operations involving matrices or vectors
+  #
+  class VectorOp < Op
     def type
       signature.split(" ").sort.last.to_sym
     end
   end
 
-  class VectorDivScalar
-    constructor :a, :b, :signature, :accessors => true
-
-    def associative?; false; end
-
-    def type
-      signature.split(" ").sort.last.to_sym
-    end
+  class MatMulMat < VectorOp
   end
 
-  class ScalarMulScalar
-    constructor :a, :b, :signature, :accessors => true
-
-    def self.strict_types?; false; end
-
-    def type
-      signature.include?("float") ? :float : :int
-    end
+  class MatMulVector < VectorOp
+    def self.strict_types?; true; end
   end
 
-  class ScalarDivScalar
-    constructor :a, :b, :signature, :accessors => true
-
-    def self.strict_types?; false; end
-
-    def type
-      signature.include?("float") ? :float : :int
-    end
+  class MatMulScalar < VectorOp
   end
 
-  class ScalarAddScalar
-    constructor :a, :b, :signature, :accessors => true
+  class VectorMulVector < VectorOp
+    def type; :float; end
+  end
 
-    def self.strict_types?; false; end
+  class VectorAddVector < VectorOp
+  end
 
+  class VectorSubVector < VectorOp
+    def self.strict_types?; true; end
+  end
+
+  class VectorMulScalar < VectorOp
+  end
+
+  class VectorDivScalar < VectorOp
+  end
+
+  class ScalarOp < Op
     def type
       signature.include?("float") ? :float : :int
     end
   end
 
-  class ScalarSubScalar
-    constructor :a, :b, :signature, :accessors => true
-
-    def self.strict_types?; false; end
-
-    def type
-      signature.include?("float") ? :float : :int
-    end
+  class ScalarMulScalar < ScalarOp
   end
 
-  class Condition;
+  class ScalarDivScalar < ScalarOp
+  end
+
+  class ScalarAddScalar < ScalarOp
+  end
+
+  class ScalarSubScalar < ScalarOp
+  end
+
+  class Condition
+    def __children; [ a, b ]; end
     def self.strict_types?; false; end
   end
 
@@ -179,10 +142,14 @@ module NLSE
 
   class Uniform
     constructor :name, :type, :accessors => true
+
+    def __children; []; end
   end
 
   class Function
     constructor :name, :arguments, :type, :body, :builtin, :accessors => true
+
+    def __children; [ body ].flatten; end
 
     def signature
       "#{type} = f(#{arguments.map {|name, value| value.type }.join(", ")})"
@@ -196,26 +163,38 @@ module NLSE
 
   class FunctionCall
     constructor :name, :arguments, :type, :accessors => true
+
+    def __children; [ arguments ].flatten; end
   end
 
   class If
     constructor :condition, :then_body, :else_body, :accessors => true
+
+    def __children; [ condition, then_body, else_body ].flatten; end
   end
 
   class For
     constructor :init, :condition, :iterator, :body, :accessors => true
+
+    def __children; [ init, condition, iterator, body ].flatten; end
   end
 
   class While
     constructor :condition, :body, :accessors => true
+
+    def __children; [ condition, body ].flatten; end
   end
 
   class Return
     constructor :value, :accessors => true
+
+    def __children; [ value ]; end
   end
 
   class Program
     attr_reader :root_scope, :functions, :uniforms
+
+    def __children; [ functions.values, uniforms.values ].flatten; end
 
     def initialize(functions = [], uniforms = [])
       @root_scope = Scope.new(nil)
@@ -234,6 +213,16 @@ module NLSE
     def register_function(func)
       functions[func.name] ||= []
       functions[func.name]  << func
+    end
+
+    def used_uniforms
+      uniforms.values.select do |uniform|
+        visitor = proc do |node|
+          (node.is_a?(Value) and node.ref and node.value == uniform.name and node.type == uniform.type) ?
+              true : node.__children.any?(&visitor)
+        end
+        visitor.call(self)
+      end
     end
 
   end
