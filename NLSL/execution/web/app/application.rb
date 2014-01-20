@@ -89,18 +89,24 @@ class Runtime
     code = editor.getSession().getValue();
     }
     HTTP.post("/compile/#{type}/#{name}", :payload => { :code => code } ) do |response|
-      new_class = response.body
-      `eval(new_class)`
+      if response.ok?
+        new_class = response.body
+        `eval(new_class)`
 
-      shader = `eval("Opal." + name + ".$new()")`
-      if type == :geometry
-        @engine.geometry_shader = NLSE::Target::Ruby::GeometryShader.new(shader)
-      elsif type == :color
-        @engine.color_shader = NLSE::Target::Ruby::ColorShader.new(shader)
-        shader.bind_uniform({:bluetone => 0.5})
+        shader = `eval("Opal." + name + ".$new()")`
+        if type == :geometry
+          @engine.geometry_shader = NLSE::Target::Ruby::GeometryShader.new(shader)
+        elsif type == :color
+          @engine.color_shader = NLSE::Target::Ruby::ColorShader.new(shader)
+          shader.bind_uniform({:bluetone => 0.5})
+        end
+
+        yield if block_given?
+      else
+        status = response.json
+        message = "#{status["error"]} error: #{status["reason"]}"
+        `alert(message)`
       end
-
-      yield if block_given?
     end
   end
 
