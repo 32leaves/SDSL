@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+    <script src="/vendor/jquery-1.10.2.min.js"></script>
+    <script src="/vendor/ace/ace.js"></script>
+    <style>
+        /* Eric Meyer's Reset CSS v2.0 - http://cssreset.com */
+        html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:none}table{border-collapse:collapse;border-spacing:0}
+        body {
+            overflow: hidden;
+            position: relative;
+            font-family: Helvetica;
+        }
+        canvas { width: 100%; height: 100% }
+
+        .toolbar { position: absolute; top: 0px; left: 0px; right: 60%; height: 39px; background-color: #000; color: white; overflow: hidden; line-height: 40px; border-bottom: 1px solid #4f4f4f; }
+        .toolbar .button { font-size: 80%; position: absolute; top: 0px; bottom: 0px; vertical-align: middle; text-align: center; border-left: 1px solid #4f4f4f; cursor: pointer; }
+        .toolbar .logo { padding-left: 1em; left: 5%; right: 50%; }
+        .toolbar .run { left: 50%; right: 20%; }
+        .toolbar .compile { left: 80%; right: 10%; }
+        .toolbar .settings { left: 90%; right: 0%; }
+
+        .renderContainer {
+            position: absolute;
+            top: 40px;
+            left: 40%;
+            right: 0px;
+            bottom: 0px;
+        }
+
+        .editorContainer {
+            position: absolute;
+            left: 0px;
+            right: 60%;
+            background-color: #000;
+            line-height: 30px;
+            font-weight: bold;
+            font-size: 70%;
+            color: white;
+        }
+        .editorContainer small {
+            padding-left: 1em;
+        }
+        #geometryShaderContainer {
+            position: absolute;
+            top: 40px;
+            bottom: 50%;
+        }
+        #colorShaderContainer {
+            position: absolute;
+            top: 50%;
+            bottom: 0%;
+        }
+        .editor {
+            position: absolute;
+            top: 30px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+        }
+    </style>
+</head>
+<body>
+    <script src="/vendor/three.min.js"></script>
+    <script src="/vendor/OrbitControls.js"></script>
+    <script src="/vendor/dat.gui.min.js"></script>
+    <script src="/assets/application.js"></script>
+
+    <script>
+        var geometryEditor, colorEditor;
+        $(function() {
+            colorEditor = ace.edit("colorShader");
+            colorEditor.setTheme("ace/theme/monokai");
+            colorEditor.getSession().setMode("ace/mode/glsl");
+
+            geometryEditor = ace.edit("geometryShader");
+            geometryEditor.setTheme("ace/theme/monokai");
+            geometryEditor.getSession().setMode("ace/mode/glsl");
+        });
+    </script>
+
+    <div class="toolbar">
+        <span class="logo">NLSL</span>
+        <span class="run button" id="runButton">RUN</span>
+        <span class="compile button">\/</span>
+        <span class="settings button">S</span>
+    </div>
+    <div class="renderContainer" id="canvasContainer">
+
+    </div>
+    <div class="editorContainer" id="geometryShaderContainer">
+        <small>GEOMETRY</small>
+        <div class="editor" id="geometryShader">void main() {
+    float pi = 3.14169;
+    float scale = 10.0;
+    float angle = ((2 * pi) / iFragCount) * (scale * iGlobalTime - iFragID);
+    vec3 dp = iResolution * 0.5;
+
+    vec3 r = vec3(dp.x + dp.x * cos(angle), dp.y + dp.y * sin(angle), 10.0);
+    nl_FragCoord = r
+}
+        </div>
+    </div>
+    <div class="editorContainer" id="colorShaderContainer">
+        <small>COLOR</small>
+        <div class="editor" id="colorShader">uniform float bluetone;
+
+void main() {
+    nl_FragColor = vec4(iFragCoord.x / iResolution.x, iFragCoord.y / iResolution.y, bluetone, 0.5);
+}
+        </div>
+    </div>
+</body>
+</html>
