@@ -75,7 +75,7 @@ module THREE
     attr_reader :mesh
 
     def initialize(pos)
-      @geometry = `new THREE.SphereGeometry( 5 )`
+      @geometry = `new THREE.SphereGeometry( 5, 10, 10 )`
       @material =  `new THREE.MeshLambertMaterial( { color:0xffffff, shading: THREE.FlatShading } )`
       @mesh = `new THREE.Mesh( self.geometry, self.material )`
       `self.mesh.matrixAutoUpdate = false`
@@ -90,9 +90,9 @@ module THREE
     def set_position(pos)
       @position = pos
 
-      `self.mesh.position.x = 30 * pos.x`
-      `self.mesh.position.y = 30 * pos.y`
-      `self.mesh.position.z = 30 * pos.z`
+      `self.mesh.position.x = pos.x`
+      `self.mesh.position.y = pos.y`
+      `self.mesh.position.z = pos.z`
       `self.mesh.updateMatrix()`
     end
 

@@ -294,7 +294,7 @@ module NLSE
           @color_shader = color_shader
 
           @frag_count = 16
-          @resolution = Runtime::Vec3.new(1.0, 1.0, 0.0)
+          @resolution = Runtime::Vec3.new(100.0, 100.0, 0.0)
           reset_time
         end
 
