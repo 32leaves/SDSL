@@ -143,7 +143,10 @@ class Runtime
 
 %x{
     controls = new THREE.OrbitControls( self.camera.camera );
+controls.enabled = false;
     controls.addEventListener( 'change', function() { render.call() } );
+    $('#canvasContainer').mouseover(function() { controls.enabled = true; });
+    $('#canvasContainer').mouseout(function() { controls.enabled = false; });
 
     var scene = self.scene.scene;
     scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
@@ -163,10 +166,12 @@ class Runtime
   end
 
   def on_resize
-    width = `window.innerWidth`
+    width = Element.find('#canvasContainer').width
     height = `window.innerHeight`
     @camera.aspect = width / height
     @renderer.set_size(width, height)
+
+    Element.find('body').css(:height => height)
 
     render
   end
@@ -185,14 +190,13 @@ end
 
 Document.ready? do
   runtime = Runtime.new
-  Element.find('body') << runtime.renderer.dom_element
+  Element.find('#canvasContainer') << runtime.renderer.dom_element
 
   reload = proc { runtime.reload_shaders do runtime.rebuild_scene; runtime.rebuild_gui; end }
   Element.find('#runButton').on(:click) do reload.call; end
   reload.call
 
   runtime.rebuild_gui
-
   runtime.start
 end
 
