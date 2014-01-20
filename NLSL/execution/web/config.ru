@@ -12,5 +12,12 @@ map '/vendor' do
   run Rack::Directory.new('public/vendor')
 end
 
+require 'sass/plugin/rack'
+Sass::Plugin.options[:style] = :compressed
+use Sass::Plugin::Rack
+map '/css' do
+  run Rack::Directory.new('public/stylesheets')
+end
+
 require './app'
 run App.new

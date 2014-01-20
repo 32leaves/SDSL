@@ -1,0 +1,107 @@
+@import "reset";
+
+$toolbarHeight: 40px;
+$editorWidth: 40%;
+
+body {
+  overflow: hidden;
+  position: relative;
+  font-family: Helvetica;
+}
+
+canvas {
+  width: 100%;
+  height: 100%
+}
+
+.toolbar {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 100% - $editorWidth;
+  height: $toolbarHeight - 1px;
+  background-color: #000;
+  color: white;
+  overflow: hidden;
+  line-height: $toolbarHeight;
+  border-bottom: 1px solid #4f4f4f;
+}
+
+.toolbar {
+  .button {
+    font-size: 80%;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    vertical-align: middle;
+    text-align: center;
+    border-left: 1px solid #4f4f4f;
+    cursor: pointer;
+  }
+
+  .logo {
+    padding-left: 1em;
+    left: 5%;
+    right: 50%;
+  }
+
+  .run {
+    left: 50%;
+    right: 20%;
+  }
+
+  .compile {
+    left: 80%;
+    right: 10%;
+  }
+
+  .settings {
+    left: 90%;
+    right: 0%;
+  }
+}
+
+.renderContainer {
+  position: absolute;
+  top: 40px;
+  left: $editorWidth;
+  right: 0px;
+  bottom: 0px;
+}
+
+.editorContainer {
+  position: absolute;
+  left: 0px;
+  right: 100% - $editorWidth;
+  background-color: #000;
+  line-height: 30px;
+  font-weight: bold;
+  font-size: 70%;
+  color: white;
+}
+
+.editorContainer{
+  small {
+    padding-left: 1em;
+  }
+
+  .editor {
+    position: absolute;
+    top: 30px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+  }
+}
+
+#geometryShaderContainer {
+  position: absolute;
+  top: $toolbarHeight;
+  bottom: 50%;
+}
+
+#colorShaderContainer {
+  position: absolute;
+  top: 50%;
+  bottom: 0%;
+}

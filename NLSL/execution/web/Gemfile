@@ -4,6 +4,7 @@ gem 'opal', '>= 0.5.5'
 gem 'opal-sprockets'
 gem 'opal-jquery'
 gem 'sinatra'
+gem 'sass'
 
 gem 'constructor'
 gem 'treetop'
