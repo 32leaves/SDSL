@@ -215,6 +215,9 @@ module NLSE
       functions[func.name]  << func
     end
 
+    #
+    # Computes a list of uniforms which are used in this program
+    #
     def used_uniforms
       uniforms.values.select do |uniform|
         visitor = proc do |node|

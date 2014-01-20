@@ -7,7 +7,6 @@ module NLSE
       # required for transformer generated code to run.
       #
       module Runtime
-        include Math
 
         class Vec2
           attr_accessor :x, :y
@@ -157,7 +156,7 @@ module NLSE
           attr_reader :m
 
           def initialize(size, values)
-            throw "Not enough values" unless values.length >= size**2
+            raise "Not enough values" unless values.length >= size**2
 
             @size = size
             @m = values
@@ -176,7 +175,7 @@ module NLSE
             elsif other.is_a? Numeric
               @m = @m.map {|e| e * other }
             else
-              throw "Cannot multiply a matrix with #{other}"
+              raise "Cannot multiply a matrix with #{other}"
             end
           end
 
@@ -206,6 +205,9 @@ module NLSE
         def mat2(*args); Mat.new(2, args); end
         def mat3(*args); Mat.new(3, args); end
         def mat4(*args); Mat.new(4, args); end
+        def sin(x); Math.sin(x); end
+        def cos(x); Math.cos(x); end
+        def tan(x); Math.tan(x); end
       end
 
       #
@@ -213,15 +215,13 @@ module NLSE
       #
       class Shader
 
-        def initialize(nlse)
-          @nlse = nlse
-          @compiled = Transformer.new.transform(nlse)
-        end
-
-        def bind_uniform(name, value)
-          raise "Unknown uniform: #{name}" if @nlse.uniforms[name].nil?
-          instance_variable_set("@#{name}", value)
-          self.class.__send__(:attr_accessor, name)
+        def bind_uniform(uniforms)
+          uniforms.each do |kv|
+            name, value = kv
+            raise "Unknown uniform: #{name}" unless uniform_exists? name
+            instance_variable_set("@#{name}", value)
+            self.class.__send__(:attr_accessor, name)
+          end
           self
         end
 
@@ -230,26 +230,25 @@ module NLSE
       #
       # Serves as interface between geometry shader code and the rest of the world
       #
-      class GeometryShader < Shader
-        include Runtime
+      class GeometryShader
 
-        attr_reader :iGlobalTime, :iResolution, :iFragID, :iFragCount
-        attr_writer :nl_FragCoord
-
-        def initialize(nlse)
-          super
+        def initialize(shader)
+          raise "Shader is not a NLSE::Target::Ruby::Shader" unless shader.is_a? Shader
+          @shader = shader
         end
 
         def execute(time, resolution, fragCount, fragID)
-          @iGlobalTime = time
-          @iResolution = resolution
-          @iFragCount = fragCount
-          @iFragID = fragID
+          @shader.bind_uniform(
+              :iGlobalTime => time,
+              :iResolution => resolution,
+              :iFragCount => fragCount,
+              :iFragID => fragID,
+              :nl_FragCoord => 0
+          )
+          @shader.main
+          raise "Shader did not set fragment coordinates" if @shader.nl_FragCoord.nil?
 
-          instance_eval @compiled
-          throw "Shader did not set fragment coordinates" if @nl_FragCoord.nil?
-
-          @nl_FragCoord
+          @shader.nl_FragCoord
         end
 
       end
@@ -257,33 +256,96 @@ module NLSE
       #
       # Serves as interface between color shader code and the rest of the world
       #
-      class ColorShader < Shader
-        include Runtime
+      class ColorShader
 
-        attr_reader :iGlobalTime, :iResolution, :iFragCoord
-        attr_writer :nl_FragColor
-
-        def initialize(nlse)
-          super
+        def initialize(shader)
+          @shader = shader
         end
 
         def execute(time, resolution, fragCoord)
-          @iGlobalTime = time
-          @iResolution = resolution
-          @iFragCoord = fragCoord
+          @shader.bind_uniform(
+              :iGlobalTime => time,
+              :iResolution => resolution,
+              :iFragCoord => fragCoord,
+              :nl_FragColor => 0
+          )
 
-          instance_eval @compiled
-          throw "Shader did not set fragment color" if @nl_FragColor.nil?
+          @shader.known_uniforms.each do |uniform|
+            raise "Unbound uniform: #{uniform}" if @shader.__send__(uniform).nil?
+          end
 
-          @nl_FragColor
+          @shader.main
+          raise "Shader did not set fragment color" if @shader.nl_FragColor.nil?
+
+          @shader.nl_FragColor
         end
         
+      end
+
+      #
+      # Utility class to execute shaders in a Ruby environment. This class takes care of
+      # managing built-in uniforms, updating iGlobalTime and executing the shaders correctly.
+      #
+      class Engine
+        attr_accessor :geometry_shader, :color_shader, :frag_count, :resolution
+
+        def initialize(geometry_shader = nil, color_shader = nil)
+          @geometry_shader = geometry_shader
+          @color_shader = color_shader
+
+          @frag_count = 16
+          @resolution = Runtime::Vec3.new(1.0, 1.0, 0.0)
+          reset_time
+        end
+
+        #
+        # Resets the global time marker of this engine, restarting the iGlobalTime uniform
+        #
+        def reset_time
+          @start_time = Time.now
+        end
+
+        #
+        # Executes one shader run and returns an array with frag_count Runtime::Vec4 colors
+        # where the index corresponds to the respective FragID
+        #
+        def execute
+          current_time = Time.now
+          geometry = geometry_shader.nil? ? [] : compute_geometry(current_time)
+          color = color_shader.nil?       ? [] : compute_color(geometry, current_time)
+
+          [ geometry, color ]
+        end
+
+        #
+        # Computes the color for the given geometry, This method can be used to probe
+        # the color field generated by the color shader.
+        #
+        def compute_color(geometry, current_time = Time.now)
+          time = (current_time - @start_time) / 1000.0
+          geometry.map {|geom| color_shader.execute(time, @resolution, geom) }
+        end
+
+        #
+        # Computes the geometry based on the frag IDs. Returns an array of frag_count
+        # Runtime::Vec3 positions.
+        #
+        def compute_geometry(current_time = Time.now)
+          time = (current_time - @start_time) / 1000.0
+          (0...@frag_count).map {|i| geometry_shader.execute(time, @resolution, @frag_count, i) }
+        end
+
       end
 
       #
       # Generates Ruby code out of NLSE code
       #
       class Transformer
+        attr_accessor :class_name
+
+        def initialize(class_name = "NLSLProgram")
+          @class_name = class_name
+        end
 
         def transform(element, sep = nil)
           (element.is_a?(Array) ? element : [ element ]).map do |root|
@@ -299,9 +361,25 @@ module NLSE
 
         def transform_program(root)
           """
-          #{transform root.functions.values.flatten.reject {|e| e.builtin? }}
-          main
+          class #{class_name} < NLSE::Target::Ruby::Shader
+            include NLSE::Target::Ruby::Runtime
+
+            #{transform root.uniforms.values}
+            #{transform root.functions.values.flatten.reject {|e| e.builtin? }}
+
+            def known_uniforms
+              [ #{root.uniforms.keys.map {|k| ":#{k}" }.join(", ")} ]
+            end
+
+            def uniform_exists?(name)
+              known_uniforms.include?(name)
+            end
+          end
           """
+        end
+
+        def transform_uniform(root)
+          "attr_accessor :#{root.name}\n"
         end
 
         def transform_function(root)
