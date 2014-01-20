@@ -121,14 +121,14 @@ class Runtime
     general.add settings, "updateGeometry"
     general.add settings, "updateColor"
 
-    unless @engine.nil? or @engine.geometry_shader.nil?
+    unless @engine.nil? or @engine.geometry_shader.nil? or @engine.geometry_shader.custom_uniforms.empty?
       geom = @gui.add_folder "Geometry Uniforms"
       @engine.geometry_shader.custom_uniforms.each {|uniform|
         geom.add @engine.geometry_shader.shader, uniform
       }
     end
 
-    unless @engine.nil? or @engine.color_shader.nil?
+    unless @engine.nil? or @engine.color_shader.nil? or @engine.color_shader.custom_uniforms.empty?
       color = @gui.add_folder "Color Uniforms"
       @engine.color_shader.custom_uniforms.each {|uniform|
         color.add @engine.color_shader.shader, uniform
