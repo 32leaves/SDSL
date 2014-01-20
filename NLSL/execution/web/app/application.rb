@@ -41,7 +41,7 @@ class Runtime
     on_resize
     update = proc do
       animate
-      #`requestAnimationFrame(function() { update.call() })`
+      `requestAnimationFrame(function() { update.call() })`
     end
     update.call
   end
@@ -63,7 +63,7 @@ class Runtime
     unless @leds.nil?
       geometry, color = @engine.execute
       geometry.each_with_index {|pos, idx|
-        @leds[idx].set_position pos
+        #@leds[idx].set_position pos
         @leds[idx].set_color color[idx]
       }
       color

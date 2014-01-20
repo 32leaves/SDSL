@@ -26,6 +26,16 @@ module THREE
 
   end
 
+  class Color
+    attr_reader :color
+
+    def initialize(vector)
+      @color = `new THREE.Color()`
+      `self.color.setRGB(vector.x, vector.y, vector.z)`
+    end
+
+  end
+
   class Camera
     attr_reader :camera
 
@@ -87,11 +97,8 @@ module THREE
     end
 
     def set_color(color)
-      r = (color.x * 255).ceil
-      g = (color.y * 255).ceil
-      b = (color.z * 255).ceil
-      c = r << 16 | g << 8 | b
-      `self.material.color = c`
+      c = Color.new(color)
+      `self.material.color = c.color`
     end
 
   end
