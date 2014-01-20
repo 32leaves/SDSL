@@ -1,6 +1,7 @@
 require 'opal'
 require 'opal-jquery'
 require 'THREE'
+require 'DatGUI'
 require 'target.ruby'
 
 #
@@ -20,9 +21,12 @@ end
 
 
 class Runtime
-  attr_reader :scene, :renderer, :camera, :engine
+  attr_reader :scene, :renderer, :camera, :engine, :gui, :settings
 
   def initialize
+    @settings = GeneralSettings.new
+    @gui = nil
+
     @leds = nil
     @camera = THREE::Camera.new(60, `window.innerWidth / window.innerHeight`, 1, 500)
     @camera.set_z 300
@@ -63,8 +67,8 @@ class Runtime
     unless @leds.nil?
       geometry, color = @engine.execute
       geometry.each_with_index {|pos, idx|
-        #@leds[idx].set_position pos
-        @leds[idx].set_color color[idx]
+        @leds[idx].set_position pos if settings.updateGeometry
+        @leds[idx].set_color color[idx] if settings.updateColor
       }
       color
     end
@@ -98,7 +102,6 @@ class Runtime
           @engine.geometry_shader = NLSE::Target::Ruby::GeometryShader.new(shader)
         elsif type == :color
           @engine.color_shader = NLSE::Target::Ruby::ColorShader.new(shader)
-          shader.bind_uniform({:bluetone => 0.5})
         end
 
         yield if block_given?
@@ -107,6 +110,29 @@ class Runtime
         message = "#{status["error"]} error: #{status["reason"]}"
         `alert(message)`
       end
+    end
+  end
+
+  def rebuild_gui
+    gui.destroy unless gui.nil?
+
+    @gui = DatGUI::GUI.new
+    general = @gui.add_folder "General"
+    general.add settings, "updateGeometry"
+    general.add settings, "updateColor"
+
+    unless @engine.nil? or @engine.geometry_shader.nil?
+      geom = @gui.add_folder "Geometry Uniforms"
+      @engine.geometry_shader.custom_uniforms.each {|uniform|
+        geom.add @engine.geometry_shader.shader, uniform
+      }
+    end
+
+    unless @engine.nil? or @engine.color_shader.nil?
+      color = @gui.add_folder "Color Uniforms"
+      @engine.color_shader.custom_uniforms.each {|uniform|
+        color.add @engine.color_shader.shader, uniform
+      }
     end
   end
 
@@ -147,13 +173,25 @@ class Runtime
 
 end
 
+class GeneralSettings
+  attr_accessor :updateGeometry, :updateColor
+
+  def initialize
+    @updateGeometry = false
+    @updateColor = true
+  end
+
+end
+
 Document.ready? do
   runtime = Runtime.new
   Element.find('body') << runtime.renderer.dom_element
 
-  reload = proc { runtime.reload_shaders do runtime.rebuild_scene; end }
+  reload = proc { runtime.reload_shaders do runtime.rebuild_scene; runtime.rebuild_gui; end }
   Element.find('#runButton').on(:click) do reload.call; end
   reload.call
+
+  runtime.rebuild_gui
 
   runtime.start
 end

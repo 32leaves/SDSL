@@ -231,6 +231,7 @@ module NLSE
       # Serves as interface between geometry shader code and the rest of the world
       #
       class GeometryShader
+        attr_reader :shader
 
         def initialize(shader)
           raise "Shader is not a NLSE::Target::Ruby::Shader" unless shader.is_a? Shader
@@ -251,12 +252,17 @@ module NLSE
           @shader.nl_FragCoord
         end
 
+        def custom_uniforms
+          shader.known_uniforms - [ :iGlobalTime, :iResolution, :iFragCount, :iFragID, :nl_FragCoord ]
+        end
+
       end
       
       #
       # Serves as interface between color shader code and the rest of the world
       #
       class ColorShader
+        attr_reader :shader
 
         def initialize(shader)
           @shader = shader
@@ -278,6 +284,10 @@ module NLSE
           raise "Shader did not set fragment color" if @shader.nl_FragColor.nil?
 
           @shader.nl_FragColor
+        end
+
+        def custom_uniforms
+          shader.known_uniforms - [ :iGlobalTime, :iResolution, :iFragCoord, :nl_FragColor ]
         end
         
       end
@@ -367,6 +377,10 @@ module NLSE
             #{transform root.uniforms.values}
             #{transform root.functions.values.flatten.reject {|e| e.builtin? }}
 
+            def initialize
+              #{transform_uniform_init root.uniforms.values}
+            end
+
             def known_uniforms
               [ #{root.uniforms.keys.map {|k| ":#{k}" }.join(", ")} ]
             end
@@ -380,6 +394,20 @@ module NLSE
 
         def transform_uniform(root)
           "attr_accessor :#{root.name}\n"
+        end
+
+        def transform_uniform_init(root)
+          root.map do |uniform|
+            value = case uniform.type
+              when :vec2; "vec2(0.0, 0.0)"
+              when :vec3; "vec3(0.0, 0.0, 0.0)"
+              when :vec4; "vec4(0.0, 0.0, 0.0, 0.0)"
+              when :float; "1.0"
+              when :int; "1"
+             end
+
+            "@#{uniform.name} = #{value}"
+          end.join("\n")
         end
 
         def transform_function(root)

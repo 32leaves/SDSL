@@ -11,7 +11,7 @@ module DatGUI
       Folder.new folder
     end
 
-    def add(ref, id, constraint)
+    def add(ref, id, constraint = nil)
       if constraint.nil?
         `self.parent.add(ref, id)`
       else
@@ -51,8 +51,16 @@ module DatGUI
 
   class GUI < Folder
 
-    def initialize
-      super `new dat.GUI()`
+    def initialize(auto_place = true)
+      super `new dat.GUI({ autoPlace: auto_place })`
+    end
+
+    def dom_element
+      `self.parent.domElement`
+    end
+
+    def destroy
+      `self.parent.destroy()`
     end
 
   end
