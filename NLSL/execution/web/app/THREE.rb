@@ -66,7 +66,7 @@ module THREE
     end
 
     def clear
-
+      `self.scene.children`.each {|child| `self.scene.remove(child)` }
     end
 
   end

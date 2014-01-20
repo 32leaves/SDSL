@@ -71,7 +71,9 @@ class Runtime
   end
 
   def rebuild_scene
-    @scene.clear
+    @scene = THREE::Scene.new
+    setup_scene
+
     @engine.reset_time
     @leds = @engine.compute_geometry.map {|pos| THREE::LED.new(pos) }
     @leds.each {|led| @scene.add(led.mesh) }
@@ -80,7 +82,13 @@ class Runtime
 
   def reload_shader(type, &block)
     name = "SH#{Time.now().to_i}#{rand(1000)}"
-    HTTP.get("/compile/#{type}/#{name}") do |response|
+    editorID = "#{type}Shader"
+    code = ""
+    %x{
+    var editor = ace.edit(editorID);
+    code = editor.getSession().getValue();
+    }
+    HTTP.post("/compile/#{type}/#{name}", :payload => { :code => code } ) do |response|
       new_class = response.body
       `eval(new_class)`
 
@@ -138,8 +146,7 @@ Document.ready? do
   Element.find('body') << runtime.renderer.dom_element
 
   reload = proc { runtime.reload_shaders do runtime.rebuild_scene; end }
-
-  Element.find('#runButton').on(:click) &reload
+  Element.find('#runButton').on(:click) do reload.call; end
   reload.call
 
   runtime.start

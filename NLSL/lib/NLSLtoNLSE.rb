@@ -160,8 +160,18 @@ module NLSL
         @context.input[0..@context.interval.begin].count("\n") + 1
       end
 
+      #
+      # Falls back to to_s to make the debug output look nice. Use message! to get the message only
+      #
       def message
         to_s
+      end
+
+      #
+      # Only the message
+      #
+      def message!
+        @message
       end
 
       def to_s
@@ -183,6 +193,7 @@ module NLSL
       def transform(element, scope = nil, program = nil)
         _error element, "Scope is not a NLSE::Scope" unless scope.is_a? NLSE::Scope or scope.nil?
         _error element, "Program is not a NLSE::Program" unless program.is_a?(NLSE::Program) or program.nil?
+        _error element, "Element is nil" if element.nil?
 
         if(element.is_a? Program)
           transform_program(element, scope, program)
