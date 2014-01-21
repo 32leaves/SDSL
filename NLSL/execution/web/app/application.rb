@@ -216,6 +216,13 @@ Document.ready? do
   Element.find('#runButton').on(:click) do reload.call; end
   reload.call
 
+  Element.find("body").on(:keypress) do |evt|
+    if evt.key_code == 13 and `evt.native.shiftKey`
+      evt.prevent_default
+      reload.call
+    end
+  end
+
   runtime.rebuild_gui
   runtime.start
 end
