@@ -91,6 +91,12 @@ body {
     bottom: 0px;
   }
 }
+.error {
+  position: absolute;
+  background-color: rgba(255, 10, 22, 0.2);
+
+  z-index: 40;
+}
 
 #geometryShaderContainer {
   position: absolute;

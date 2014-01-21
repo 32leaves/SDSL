@@ -2,6 +2,7 @@ require 'opal'
 require 'opal-jquery'
 require 'THREE'
 require 'DatGUI'
+require 'ACE'
 require 'target.ruby'
 
 #
@@ -26,6 +27,13 @@ class Runtime
   def initialize
     @settings = GeneralSettings.new
     @gui = nil
+
+    @geometry_editor = ACE::Editor.new "geometryShader"
+    @color_editor = ACE::Editor.new "colorShader"
+    [ @geometry_editor, @color_editor ].each  do |editor|
+      editor.theme = "ace/theme/monokai"
+      editor.mode = "ace/mode/glsl"
+    end
 
     @leds = nil
     @camera = THREE::Camera.new(60, `window.innerWidth / window.innerHeight`, 1, 1000)
@@ -87,13 +95,11 @@ class Runtime
 
   def reload_shader(type, &block)
     name = "SH#{Time.now().to_i}#{rand(1000)}"
-    editorID = "#{type}Shader"
-    code = ""
-    %x{
-    var editor = ace.edit(editorID);
-    code = editor.getSession().getValue();
-    }
+    editor = type == :geometry ? @geometry_editor : @color_editor
+    code = editor.value
     HTTP.post("/compile/#{type}/#{name}", :payload => { :code => code } ) do |response|
+      editor.clear_markers
+      editor.clear_annotations
       if response.ok?
         new_class = response.body
         `eval(new_class)`
@@ -113,7 +119,8 @@ class Runtime
       else
         status = response.json
         message = "#{status["error"]} error: #{status["reason"]}"
-        `alert(message)`
+        editor.add_maker status["where"]["line"], "error"
+        editor.add_annotation status["where"]["line"] - 1, "error", message
       end
     end
   end

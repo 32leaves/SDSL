@@ -12,19 +12,6 @@
     <script src="/vendor/dat.gui.min.js"></script>
     <script src="/assets/application.js"></script>
 
-    <script>
-        var geometryEditor, colorEditor;
-        $(function() {
-            colorEditor = ace.edit("colorShader");
-            colorEditor.setTheme("ace/theme/monokai");
-            colorEditor.getSession().setMode("ace/mode/glsl");
-
-            geometryEditor = ace.edit("geometryShader");
-            geometryEditor.setTheme("ace/theme/monokai");
-            geometryEditor.getSession().setMode("ace/mode/glsl");
-        });
-    </script>
-
     <div class="toolbar">
         <span class="logo">NLSL</span>
         <span class="run button" id="runButton">RUN</span>

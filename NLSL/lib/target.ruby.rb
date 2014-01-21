@@ -225,6 +225,10 @@ module NLSE
           self
         end
 
+        def uniform_state
+          known_uniforms.inject({}) {|r, uniform| r[uniform] = self.__send__(uniform); r }
+        end
+
       end
 
       #
