@@ -100,9 +100,13 @@ class Runtime
 
         shader = `eval("Opal." + name + ".$new()")`
         if type == :geometry
+          state = @engine.geometry_shader.shader.uniform_state rescue {}
           @engine.geometry_shader = NLSE::Target::Ruby::GeometryShader.new(shader)
+          @engine.geometry_shader.shader.bind_uniform(state)
         elsif type == :color
+          state = @engine.color_shader.shader.uniform_state rescue {}
           @engine.color_shader = NLSE::Target::Ruby::ColorShader.new(shader)
+          @engine.color_shader.shader.bind_uniform(state)
         end
 
         yield if block_given?
