@@ -43,13 +43,22 @@ module THREE
       @camera = `new THREE.PerspectiveCamera( fov, aspectRatio, nearPlane, farPlane );`
     end
 
+    def view_front
+      set_position(:x => 0, :y => 0, :z => 300)
+    end
+
     def aspect=(value)
       `self.camera.aspect = value`
       `self.camera.updateProjectionMatrix()`
     end
 
-    def set_z(z)
-      `self.camera.position.z = z`
+    def set_position(args)
+      x = args[:x]
+      y = args[:y]
+      z = args[:z]
+      `self.camera.position.x = x` unless x.nil?
+      `self.camera.position.y = y` unless y.nil?
+      `self.camera.position.z = z` unless z.nil?
     end
 
   end

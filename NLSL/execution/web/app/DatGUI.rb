@@ -11,6 +11,14 @@ module DatGUI
       Folder.new folder
     end
 
+    def open
+      `self.parent.open()`
+    end
+
+    def close
+      `self.parent.close()`
+    end
+
     def add(ref, id, constraint = nil)
       if constraint.nil?
         `self.parent.add(ref, id)`

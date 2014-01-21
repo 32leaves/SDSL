@@ -28,14 +28,14 @@ class Runtime
     @gui = nil
 
     @leds = nil
-    @camera = THREE::Camera.new(60, `window.innerWidth / window.innerHeight`, 1, 500)
-    @camera.set_z 300
+    @camera = THREE::Camera.new(60, `window.innerWidth / window.innerHeight`, 1, 1000)
+    @camera.set_position :z => 300
 
     @scene = THREE::Scene.new
     setup_scene
 
     @renderer = THREE::WebGLRenderer.new
-    @renderer.set_clear_color( `self.scene.scene.fog.color`, 1 )
+    @renderer.set_clear_color( 0xcccccc, 1 )
     Window.on(:resize) do on_resize; end
 
     @engine = NLSE::Target::Ruby::Engine.new
@@ -56,6 +56,7 @@ class Runtime
 
   def animate
     update_shader_computation
+    `self.controls.update()`
     render
   end
 
@@ -116,16 +117,18 @@ class Runtime
   def rebuild_gui
     gui.destroy unless gui.nil?
 
-    @gui = DatGUI::GUI.new
+    @gui = DatGUI::GUI.new self
     general = @gui.add_folder "General"
     general.add settings, "updateGeometry"
     general.add settings, "updateColor"
+    general.open
 
     unless @engine.nil? or @engine.geometry_shader.nil? or @engine.geometry_shader.custom_uniforms.empty?
       geom = @gui.add_folder "Geometry Uniforms"
       @engine.geometry_shader.custom_uniforms.each {|uniform|
         geom.add @engine.geometry_shader.shader, uniform
       }
+      geom.open
     end
 
     unless @engine.nil? or @engine.color_shader.nil? or @engine.color_shader.custom_uniforms.empty?
@@ -133,7 +136,12 @@ class Runtime
       @engine.color_shader.custom_uniforms.each {|uniform|
         color.add @engine.color_shader.shader, uniform
       }
+      color.open
     end
+
+    view = @gui.add_folder "View"
+    view.add @camera, "$view_front"
+    view.open
   end
 
   private
@@ -142,14 +150,14 @@ class Runtime
     render = proc { self.render }
 
 %x{
-    controls = new THREE.OrbitControls( self.camera.camera );
-controls.enabled = false;
+    var controls = new THREE.OrbitControls( self.camera.camera );
+    self.controls = controls;
+    controls.enabled = false;
     controls.addEventListener( 'change', function() { render.call() } );
     $('#canvasContainer').mouseover(function() { controls.enabled = true; });
     $('#canvasContainer').mouseout(function() { controls.enabled = false; });
 
     var scene = self.scene.scene;
-    scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
 
     // lights
     light = new THREE.DirectionalLight( 0xffffff );
@@ -172,7 +180,6 @@ controls.enabled = false;
     @renderer.set_size(width, height)
 
     Element.find('body').css(:height => height)
-
     render
   end
 
@@ -181,7 +188,9 @@ end
 class GeneralSettings
   attr_accessor :updateGeometry, :updateColor
 
-  def initialize
+  def initialize(runtime)
+    @runtime = runtime
+
     @updateGeometry = false
     @updateColor = true
   end
