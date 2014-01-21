@@ -265,6 +265,7 @@ module NLSL
       def transform_assignment(element, scope, program)
         name = element.name.to_sym
         value = transform(element.expression, scope, program)
+        initial = false
 
         if element.type.nil?
           _error element, "Unknown variable #{name}" if not scope.include?(name)
@@ -273,10 +274,11 @@ module NLSL
           end
         else
           _error element, "Type mismatch for variable \"#{name}\": #{value.type} != #{element.type}" if element.type.to_sym != value.type
+          initial = true
           scope.register_variable(name, element.type.to_sym)
         end
 
-        NLSE::VariableAssignment.new(:name => name, :value => value)
+        NLSE::VariableAssignment.new(:name => name, :value => value, :initial => initial)
       end
 
       def transform_unaryassignment(element, scope, program)
@@ -292,7 +294,7 @@ module NLSL
             :a => NLSE::Value.new(:type => type, :value => name, :ref => true),
             :b => NLSE::Value.new(:type => :int, :value => 1, :ref => false),
             :signature => "#{opsig} #{[type, :int].sort.reverse.join(" ")}"
-        ))
+        ), :initial => false)
       end
 
       def transform_opexp(element, scope, program)
