@@ -32,6 +32,10 @@ module NLSE
             Vec2.new(x / other, y / other)
           end
 
+          def %(other)
+            Vec2.new(x % other, y % other)
+          end
+
           def +(other)
             if other.is_a? Vec2
               Vec2.new(x + other.x, y + other.y)
@@ -75,6 +79,10 @@ module NLSE
 
           def /(other)
             Vec3.new(x / other, y / other, z / other)
+          end
+
+          def %(other)
+            Vec3.new(x % other, y % other, z % other)
           end
 
           def +(other)
@@ -137,6 +145,10 @@ module NLSE
 
           def /(other)
             Vec4.new(x / other, y / other, z / other, w / other)
+          end
+
+          def %(other)
+            Vec4.new(x % other, y % other, z % other, w % other)
           end
 
           def to_a
@@ -208,6 +220,7 @@ module NLSE
         def sin(x); Math.sin(x); end
         def cos(x); Math.cos(x); end
         def tan(x); Math.tan(x); end
+        def sqrt(x); Math.sqrt(x); end
       end
 
       #
@@ -483,6 +496,10 @@ module NLSE
           "(#{transform root.a} / #{transform root.b})"
         end
 
+        def transform_scalarmodscalar(root)
+          "(#{transform root.a} % #{transform root.b})"
+        end
+
         def transform_scalarmulscalar(root)
           "(#{transform root.a} * #{transform root.b})"
         end
@@ -532,6 +549,10 @@ module NLSE
         end
 
         def transform_vectordivscalar(root)
+          "(#{transform root.a} / #{transform root.b})"
+        end
+
+        def transform_vectormodscalar(root)
           "(#{transform root.a} / #{transform root.b})"
         end
 

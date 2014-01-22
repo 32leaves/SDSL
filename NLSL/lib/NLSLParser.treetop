@@ -156,7 +156,7 @@ grammar NLSL
   end
 
   rule multitive_operator
-    ( '*' / '/' ) <Operator>
+    ( '*' / '/'  / '%') <Operator>
   end
 
   rule unary_operator

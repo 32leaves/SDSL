@@ -97,6 +97,9 @@ module NLSE
   class VectorDivScalar < VectorOp
   end
 
+  class VectorModScalar < VectorOp
+  end
+
   class ScalarOp < Op
     def type
       signature.include?("float") ? :float : :int
@@ -107,6 +110,9 @@ module NLSE
   end
 
   class ScalarDivScalar < ScalarOp
+  end
+
+  class ScalarModScalar < ScalarOp
   end
 
   class ScalarAddScalar < ScalarOp

@@ -47,6 +47,8 @@ module NLSL
       _mkbfunc("cos", [ :int ], :float),
       _mkbfunc("sin", [ :float ], :float),
       _mkbfunc("sin", [ :int ], :float),
+      _mkbfunc("sqrt", [ :float ], :float),
+      _mkbfunc("sqrt", [ :int ], :float),
     ]
 
     #######
@@ -90,6 +92,17 @@ module NLSL
       "/ int float" => NLSE::ScalarDivScalar,
       "/ int int" => NLSE::ScalarDivScalar,
       "/ float float" => NLSE::ScalarDivScalar,
+
+      # modulo
+      "% int float" => NLSE::ScalarModScalar,
+      "% int int" => NLSE::ScalarModScalar,
+      "% float float" => NLSE::ScalarModScalar,
+      "% vec4 float" => NLSE::VectorModScalar,
+      "% vec4 int" => NLSE::VectorModScalar,
+      "% vec3 float" => NLSE::VectorModScalar,
+      "% vec3 int" => NLSE::VectorModScalar,
+      "% vec2 float" => NLSE::VectorModScalar,
+      "% vec2 int" => NLSE::VectorModScalar,
 
       # add and sub
       "+ vec4 vec4" => NLSE::VectorAddVector,
