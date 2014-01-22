@@ -68,6 +68,13 @@ class Runtime
     render
   end
 
+  def rebuild
+    reload_shaders do
+      rebuild_scene if settings.initGeometry
+      rebuild_gui
+    end
+  end
+
   def reload_shaders(&block)
     reload_shader(:geometry) { reload_shader(:color) { yield if block_given? } }
   end
@@ -130,6 +137,7 @@ class Runtime
 
     @gui = DatGUI::GUI.new self
     general = @gui.add_folder "General"
+    general.add settings, "initGeometry"
     general.add settings, "updateGeometry"
     general.add settings, "updateColor"
     general.open
@@ -197,11 +205,12 @@ class Runtime
 end
 
 class GeneralSettings
-  attr_accessor :updateGeometry, :updateColor
+  attr_accessor :initGeometry, :updateGeometry, :updateColor
 
   def initialize(runtime)
     @runtime = runtime
 
+    @initGeometry = true
     @updateGeometry = false
     @updateColor = true
   end
@@ -212,18 +221,16 @@ Document.ready? do
   runtime = Runtime.new
   Element.find('#canvasContainer') << runtime.renderer.dom_element
 
-  reload = proc { runtime.reload_shaders do runtime.rebuild_scene; runtime.rebuild_gui; end }
-  Element.find('#runButton').on(:click) do reload.call; end
-  reload.call
+  Element.find('#runButton').on(:click) do runtime.rebuild; end
+  runtime.rebuild
 
   Element.find("body").on(:keypress) do |evt|
     if evt.key_code == 13 and `evt.native.shiftKey`
       evt.prevent_default
-      reload.call
+      reload.rebuild
     end
   end
 
-  runtime.rebuild_gui
   runtime.start
 end
 
