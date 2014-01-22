@@ -34,9 +34,13 @@ module NLSE
   end
 
   class VariableAssignment
-    constructor :name, :value, :accessors => true
+    constructor :name, :value, :initial, :accessors => true
 
     def __children; [ value ]; end
+
+    def initial_assignment?
+      initial
+    end
   end
 
   #
