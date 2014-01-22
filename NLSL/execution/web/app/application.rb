@@ -15,6 +15,7 @@ module NLSE
         def sin(x); `Math.sin(x)`; end
         def cos(x); `Math.cos(x)`; end
         def tan(x); `Math.tan(x)`; end
+        def sqrt(x); `Math.sqrt(x)`; end
       end
     end
   end
@@ -96,6 +97,7 @@ class Runtime
 
     @engine.reset_time
     @leds = @engine.compute_geometry.map {|pos| THREE::LED.new(pos) }
+    `debugger`
     @leds.each {|led| @scene.add(led.mesh) }
     render
   end
@@ -227,7 +229,7 @@ Document.ready? do
   Element.find("body").on(:keypress) do |evt|
     if evt.key_code == 13 and `evt.native.shiftKey`
       evt.prevent_default
-      reload.rebuild
+      runtime.rebuild
     end
   end
 
