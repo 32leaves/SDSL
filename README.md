@@ -1,4 +1,4 @@
-NanoLite
+Shape Display Shader Language
 ========
 
-A hard- and software framework for RGB LEDs
+A shader model for shape-changing displays
