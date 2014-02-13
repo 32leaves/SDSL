@@ -80,6 +80,42 @@ module THREE
 
   end
 
+  class ShapeBlock
+    attr_reader :mesh
+
+    def initialize(pos)
+      @geometry = `new THREE.CubeGeometry( 10, 10, 10 )`
+      @material =  `new THREE.MeshLambertMaterial( { color:0xffffff, shading: THREE.FlatShading } )`
+      @mesh = `new THREE.Mesh( self.geometry, self.material )`
+      `self.mesh.matrixAutoUpdate = false`
+
+      set_position pos
+      @mesh
+    end
+
+    def position
+      @position
+    end
+    def set_position(pos)
+      @position = pos
+
+      `self.mesh.position.x = pos.x`
+      `self.mesh.position.y = pos.y`
+      `self.mesh.position.z = pos.z`
+      `self.mesh.updateMatrix()`
+    end
+
+    def set_height(height)
+      `self.mesh.scale.y = height`
+      `self.mesh.updateMatrix()`
+    end
+
+    def set_color(color)
+      c = Color.new(color)
+      `self.material.color = c.color`
+    end
+  end
+
   class LED
     attr_reader :mesh
 

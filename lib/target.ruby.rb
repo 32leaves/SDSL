@@ -22,7 +22,7 @@ module NLSE
 
           def *(other)
             if other.is_a?(Vec2)
-              sqrt((x * other.x) + (y * other.y))
+              Math::sqrt((x * other.x) + (y * other.y))
             else
               Vec2.new(x * other, y * other)
             end
@@ -221,6 +221,8 @@ module NLSE
         def cos(x); Math.cos(x); end
         def tan(x); Math.tan(x); end
         def sqrt(x); Math.sqrt(x); end
+        def ceil(x); x.ceil; end
+        def floor(x); x.floor; end
       end
 
       #

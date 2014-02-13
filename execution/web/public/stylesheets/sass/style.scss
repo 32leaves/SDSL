@@ -98,10 +98,34 @@ body {
   z-index: 40;
 }
 
-#geometryShaderContainer {
+#arrangementContainer {
   position: absolute;
   top: $toolbarHeight;
+  bottom: 75%;
+}
+.arrangement {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  right: 0px;
+  bottom: 0px;
+
+  z-index: 40;
+}
+.cylinder {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  overflow: hidden;
+  margin: 5px;
+}
+
+#geometryShaderContainer {
+  position: absolute;
+  top: 25%;
   bottom: 50%;
+  border-top: 1px solid #4f4f4f;
 }
 
 #colorShaderContainer {

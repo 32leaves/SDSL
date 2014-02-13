@@ -13,7 +13,7 @@
     <script src="/assets/application.js"></script>
 
     <div class="toolbar">
-        <span class="logo">NLSL</span>
+        <span class="logo">SDSL</span>
         <span class="run button" id="runButton">RUN</span>
         <span class="compile button">\/</span>
         <span class="settings button">S</span>
@@ -21,30 +21,34 @@
     <div class="renderContainer" id="canvasContainer">
 
     </div>
+    <div class="editorContainer" id="arrangementContainer">
+        <small>ARRANGEMENT</small><br />
+        <div class="arrangement">
+            <span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><br />
+            <span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><br />
+            <span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><br />
+        </div>
+    </div>
     <div class="editorContainer" id="geometryShaderContainer">
         <small>GEOMETRY</small>
-        <div class="editor" id="geometryShader">uniform float scale;
+        <div class="editor" id="geometryShader">void main() {
+    int width = floor(sqrt(iFragCount));
 
-void main() {
-    float pi = 3.14169;
-    float angle = ((2 * pi) / iFragCount) * (scale * iGlobalTime - iFragID);
-    vec3 dp = iResolution * 0.5;
-
-    vec3 r = vec3(dp.x + dp.x * cos(angle), dp.y + dp.y * sin(angle), 10.0);
-    nl_FragCoord = r
+    nl_FragCoord = vec3(ceil(iFragID % width)+ 0.0, 0.0, floor(iFragID / width) + 0.0) * 20.0;
 }</div>
     </div>
     <div class="editorContainer" id="colorShaderContainer">
-        <small>COLOR</small>
+        <small>FRAGMENT</small>
         <div class="editor" id="colorShader">uniform float bluetone;
-uniform float alpha;
+uniform float range;
+uniform float speed;
 
 void main() {
     nl_FragColor = vec4(
         iFragCoord.x / iResolution.x,
         iFragCoord.y / iResolution.y,
         bluetone,
-        alpha);
+        0.5 + range * sin(speed * iGlobalTime + range * 0.5 * sqrt((iFragCoord.x * iFragCoord.x) + (iFragCoord.z * iFragCoord.z))));
 }</div>
     </div>
 </body>

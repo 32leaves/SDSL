@@ -49,6 +49,10 @@ module NLSL
       _mkbfunc("sin", [ :int ], :float),
       _mkbfunc("sqrt", [ :float ], :float),
       _mkbfunc("sqrt", [ :int ], :float),
+      _mkbfunc("ceil", [ :int ], :int),
+      _mkbfunc("ceil", [ :float ], :int),
+      _mkbfunc("floor", [ :int ], :int),
+      _mkbfunc("floor", [ :float ], :int),
     ]
 
     #######

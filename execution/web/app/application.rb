@@ -16,6 +16,8 @@ module NLSE
         def cos(x); `Math.cos(x)`; end
         def tan(x); `Math.tan(x)`; end
         def sqrt(x); `Math.sqrt(x)`; end
+        def ceil(x); `Math.ceil(x)`; end
+        def floor(x); `Math.floor(x)`; end
       end
     end
   end
@@ -36,9 +38,9 @@ class Runtime
       editor.mode = "ace/mode/glsl"
     end
 
-    @leds = nil
+    @actors = nil
     @camera = THREE::Camera.new(60, `window.innerWidth / window.innerHeight`, 1, 1000)
-    @camera.set_position :z => 300
+    @camera.set_position :x => -300, :y => 300, :z => 300
 
     @scene = THREE::Scene.new
     setup_scene
@@ -81,24 +83,25 @@ class Runtime
   end
 
   def update_shader_computation
-    unless @leds.nil?
+    unless @actors.nil?
       geometry, color = @engine.execute
       geometry.each_with_index {|pos, idx|
-        @leds[idx].set_position pos if settings.updateGeometry
-        @leds[idx].set_color color[idx] if settings.updateColor
+        @actors[idx].set_position pos if settings.updateGeometry
+        @actors[idx].set_color color[idx] if settings.updateColor
+        @actors[idx].set_height color[idx].w
       }
       color
     end
   end
 
   def rebuild_scene
+    @engine.frag_count = @settings.fragCount
     @scene = THREE::Scene.new
     setup_scene
 
     @engine.reset_time
-    @leds = @engine.compute_geometry.map {|pos| THREE::LED.new(pos) }
-    `debugger`
-    @leds.each {|led| @scene.add(led.mesh) }
+    @actors = @engine.compute_geometry.map {|pos| THREE::ShapeBlock.new(pos) }
+    @actors.each {|led| @scene.add(led.mesh) }
     render
   end
 
@@ -142,6 +145,7 @@ class Runtime
     general.add settings, "initGeometry"
     general.add settings, "updateGeometry"
     general.add settings, "updateColor"
+    general.add settings, "fragCount"
     general.open
 
     unless @engine.nil? or @engine.geometry_shader.nil? or @engine.geometry_shader.custom_uniforms.empty?
@@ -207,7 +211,7 @@ class Runtime
 end
 
 class GeneralSettings
-  attr_accessor :initGeometry, :updateGeometry, :updateColor
+  attr_accessor :initGeometry, :updateGeometry, :updateColor, :fragCount
 
   def initialize(runtime)
     @runtime = runtime
@@ -215,6 +219,7 @@ class GeneralSettings
     @initGeometry = true
     @updateGeometry = false
     @updateColor = true
+    @fragCount = 64
   end
 
 end
