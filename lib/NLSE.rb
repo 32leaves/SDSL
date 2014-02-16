@@ -33,6 +33,12 @@ module NLSE
     def __children; [ value ]; end
   end
 
+  class SamplerAccess
+    constructor :type, :value, :index, :accessors => true
+
+    def __children; [ value ]; end
+  end
+
   class VariableAssignment
     constructor :name, :value, :initial, :accessors => true
 

@@ -198,6 +198,17 @@ module NLSL
     }
 
     #
+    # Maps how sampler based texture access translates to vectors for which texture type.
+    # Compared to matrix array access there is no bounds checking.
+    #
+    SAMPLER_ARRAY_ACCESS = {
+      :tex1 => :float,
+      :tex2 => :vec2,
+      :tex3 => :vec3,
+      :tex4 => :vec4
+    }
+
+    #
     # Error class raised in case of a compiler error
     #
     class CompilerError < StandardError
@@ -378,12 +389,18 @@ module NLSL
 
         array = element.array
         if not array.nil?
-          access_spec = MATRIX_ARRAY_ACCESS[type]
-          _error element, "Array access is only valid for mat2, mat3 or mat4" if access_spec.nil?
-          _error element, "Column index out of bounds #{array} > #{type}" if array >= access_spec.first
+          if MATRIX_ARRAY_ACCESS.keys.include?(type)
+            access_spec = MATRIX_ARRAY_ACCESS[type]
+            _error element, "Column index out of bounds #{array} > #{type}" if array >= access_spec.first
 
-          type = access_spec.last
-          result = NLSE::MatrixColumnAccess.new(:type => type, :value => result, :index => array)
+            type = access_spec.last
+            result = NLSE::MatrixColumnAccess.new(:type => type, :value => result, :index => array)
+          elsif SAMPLER_ARRAY_ACCESS.keys.include?(type)
+            type = SAMPLER_ARRAY_ACCESS[type]
+            result = NLSE::SamplerAccess.new(:type => type, :value => result, :index => array)
+          else
+            _error element, "Array access is only valid for matrices and sampler"
+          end
         end
 
         component = element.component

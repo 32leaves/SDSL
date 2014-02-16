@@ -59,7 +59,7 @@ grammar NLSL
   end
 
   rule uniformtype
-    ('sampler1' / 'sampler2' / 'sampler3' / 'sampler4') <TypeExpression> / vartype
+    ('tex1' / 'tex2' / 'tex3' / 'tex4') <TypeExpression> / vartype
   end
 
   rule rettype
