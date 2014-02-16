@@ -13,7 +13,7 @@ grammar NLSL
   end
 
   rule uniformdef
-    'uniform' space vartype space identifier space? ';' <UniformDefinition>
+    'uniform' space uniformtype space identifier space? ';' <UniformDefinition>
   end
 
   rule functiondef
@@ -56,6 +56,10 @@ grammar NLSL
 
   rule assignment
     (vartype space)? identifier space? '=' space? ( expression ) <Assignment>
+  end
+
+  rule uniformtype
+    ('sampler1' / 'sampler2' / 'sampler3' / 'sampler4') <TypeExpression> / vartype
   end
 
   rule rettype

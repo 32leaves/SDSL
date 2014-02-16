@@ -29,7 +29,7 @@ module NLSL
     end
 
     def type
-      vartype.text_value
+      uniformtype.text_value
     end
 
   end
