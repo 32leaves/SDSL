@@ -5,22 +5,52 @@ module NLSL
     # The set of uniforms that are common to all shader types
     #
     _COMMON_BUILTIN_UNIFORMS = [
-      NLSE::Uniform.new(:name => :iGlobalTime, :type => :float),
-      NLSE::Uniform.new(:name => :iResolution, :type => :vec3)
+      NLSE::Uniform.new(:name => :iGlobalTime, :type => :float)
     ]
     #
     # The set of uniforms per shader type
     #
     BUILTIN_UNIFORMS = {
         :geometry => _COMMON_BUILTIN_UNIFORMS + [
+          # the bounding box of all fragment positions
+          NLSE::Uniform.new(:name => :iResolution, :type => :vec3),
+          # total number of fragments
           NLSE::Uniform.new(:name => :iFragCount, :type => :int),
-          NLSE::Uniform.new(:name => :iFragID, :type => :int),
-          NLSE::Uniform.new(:name => :nl_FragCoord, :type => :vec3),
-        ],
-        :color => _COMMON_BUILTIN_UNIFORMS + [
+
+          # current fragment position
           NLSE::Uniform.new(:name => :iFragCoord, :type => :vec3),
-          NLSE::Uniform.new(:name => :nl_FragColor, :type => :vec4),
-        ]
+          # current fragment normal
+          NLSE::Uniform.new(:name => :iFragNormal, :type => :vec3),
+
+          # fragment position output
+          NLSE::Uniform.new(:name => :sd_FragCoord, :type => :vec3),
+          # fragment normal output
+          NLSE::Uniform.new(:name => :sd_FragNormal, :type => :vec3),
+        ],
+        :fragment => _COMMON_BUILTIN_UNIFORMS + [
+          # current fragment position
+          NLSE::Uniform.new(:name => :iFragCoord, :type => :vec3),
+          # current fragment normal
+          NLSE::Uniform.new(:name => :iFragNormal, :type => :vec3),
+
+          # fragment height output
+          NLSE::Uniform.new(:name => :sd_FragHeight, :type => :float),
+          # fragment angle output
+          NLSE::Uniform.new(:name => :sd_FragAngle, :type => :float),
+        ],
+        :pixel => _COMMON_BUILTIN_UNIFORMS + [
+            # current fragment position
+            NLSE::Uniform.new(:name => :iFragCoord, :type => :vec3),
+            # current fragment normal
+            NLSE::Uniform.new(:name => :iFragNormal, :type => :vec3),
+            # pixel resolution
+            NLSE::Uniform.new(:name => :iPixelResolution, :type => :vec2),
+            # current pixel coords
+            NLSE::Uniform.new(:name => :iPixelCoord, :type => :vec2),
+
+            # pixel color output
+            NLSE::Uniform.new(:name => :sd_PixelColor, :type => :vec4)
+        ],
     }
 
     def self._mkbfunc(name, types, rettype)
