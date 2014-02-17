@@ -223,6 +223,18 @@ module NLSE
         def sqrt(x); Math.sqrt(x); end
         def ceil(x); x.ceil; end
         def floor(x); x.floor; end
+        def length(x); x.to_a.inject(0.0) {|m,e| m+e} / x.to_a.length; end
+        def normalize(vec); vec / length(vec); end
+        def clamp(x, min, max)
+          if [ Vec2, Vec3, Vec4 ].any?{|t| x.is_a? t}
+            min = min.to_a
+            max = max.to_a
+            comps = x.to_a.each_with_index.map {|c, i| clamp(c, min[i], max[i]) }
+            x.class.new(*comps)
+          else
+            x < min ? min : (x > max ? max : x)
+          end
+        end
       end
 
       #

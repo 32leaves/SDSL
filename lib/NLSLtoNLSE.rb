@@ -73,17 +73,20 @@ module NLSL
       _mkbfunc("mat3", [ :vec3, :vec3, :vec3 ], :mat3),
       _mkbfunc("mat2", [ :float, :float, :float, :float ], :mat2),
       _mkbfunc("mat2", [ :vec2, :vec2 ], :mat2),
-      _mkbfunc("cos", [ :float ], :float),
-      _mkbfunc("cos", [ :int ], :float),
-      _mkbfunc("sin", [ :float ], :float),
-      _mkbfunc("sin", [ :int ], :float),
-      _mkbfunc("sqrt", [ :float ], :float),
-      _mkbfunc("sqrt", [ :int ], :float),
-      _mkbfunc("ceil", [ :int ], :int),
-      _mkbfunc("ceil", [ :float ], :int),
-      _mkbfunc("floor", [ :int ], :int),
-      _mkbfunc("floor", [ :float ], :int),
-    ]
+      [ :float, :int ].map {|t| [
+        _mkbfunc("cos"  , [ t ], t),
+        _mkbfunc("sin"  , [ t ], t),
+        _mkbfunc("sqrt" , [ t ], t),
+        _mkbfunc("ceil" , [ t ], t),
+        _mkbfunc("floor", [ t ], t),
+        _mkbfunc("clamp", [ t, t, t ], t),
+      ]},
+      [ :vec2, :vec3, :vec4 ].map {|t| [
+        _mkbfunc("length", [ t ], :float),
+        _mkbfunc("normalize", [ t ], t),
+        _mkbfunc("clamp", [ t, t, t ], t),
+      ]}
+    ].flatten
 
     #######
     ## Signature convention for enabling non-strict types:
