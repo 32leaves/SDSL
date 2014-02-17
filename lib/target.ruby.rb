@@ -367,10 +367,12 @@ module NLSE
       #
       class Engine
         attr_accessor :profile, :arrangement, :geometry_shader, :use_geometry_shader, :fragment_shader, :pixel_shader, :use_pixel_shader
+        attr_reader :fragment_resolution
 
         def initialize(profile = nil, arrangement = nil, geometry_shader = nil, fragment_shader = nil, pixel_shader = nil)
           @profile = profile
           @arrangement = arrangement
+          @fragment_resolution = compute_fragment_resolution
           @geometry_shader = geometry_shader
           @use_geometry_shader = false
           @fragment_shader = fragment_shader
@@ -434,10 +436,17 @@ module NLSE
         def compute_geometry(arrangement, current_time = Time.now)
           time = (current_time - @start_time)
 
-          arrangement.map {|frag| geometry_shader.execute(time, pixel_resolution, arrangement.length, frag.first, frag.last) }
+          arrangement.map {|frag| geometry_shader.execute(time, fragment_resolution, arrangement.length, frag.first, frag.last) }
         end
 
-        def pixel_resolution
+        def arrangement=(value)
+          @arrangement = value
+          @fragment_resolution = compute_fragment_resolution
+        end
+
+        def compute_fragment_resolution
+          return NLSE::Target::Ruby::Runtime::Vec3.new(0, 0, 0) if arrangement.nil?
+
           lo,hi = arrangement.inject([ [ nil, nil, nil ], [ nil, nil, nil ] ]) do |m, e|
             lo, hi = m
 

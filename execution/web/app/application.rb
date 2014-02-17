@@ -137,7 +137,7 @@ class Runtime
     setup_scene
 
     @engine.reset_time
-    offset = @engine.pixel_resolution * -0.5
+    offset = @engine.fragment_resolution * -0.5
     actor_arrangement = @engine.arrangement.map {|e| p,n=e; [p + offset, n] }
     @actors = actor_arrangement.map {|frag| pos,norm=frag; THREE::ShapeBlock.new(pos, norm) }
     @actors.each {|actor| @scene.add(actor.mesh) }
