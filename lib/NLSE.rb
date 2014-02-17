@@ -49,6 +49,12 @@ module NLSE
     end
   end
 
+  class UniformAssignment
+    constructor :name, :value, :accessors => true
+
+    def __children; [ value ]; end
+  end
+
   #
   # Base class for all binary operations
   #
@@ -242,6 +248,10 @@ module NLSE
         end
         visitor.call(self)
       end
+    end
+
+    def is_uniform?(name)
+      not uniforms[name].nil?
     end
 
   end

@@ -2,6 +2,7 @@
 
 $toolbarHeight: 40px;
 $editorWidth: 30%;
+$accordionTitleHeight: 30px;
 
 body {
   overflow: hidden;
@@ -71,11 +72,29 @@ body {
   position: absolute;
   left: 0px;
   right: 100% - $editorWidth;
+  top: $toolbarHeight;
+  bottom: 0px;
   background-color: #000;
-  line-height: 30px;
+  line-height: $accordionTitleHeight;
   font-weight: bold;
   font-size: 70%;
   color: white;
+}
+
+.accordion {
+  li {
+    position: relative;
+    width: 100%;
+    height: $accordionTitleHeight;
+    overflow: hidden;
+    border-bottom: 1px solid #4f4f4f;
+  }
+}
+
+#useGeometryShader, #usePixelShader {
+  position: absolute;
+  top: 5px;
+  right: 4px;
 }
 
 .editorContainer{
@@ -85,7 +104,7 @@ body {
 
   .editor {
     position: absolute;
-    top: 30px;
+    top: $accordionTitleHeight;
     left: 0px;
     right: 0px;
     bottom: 0px;

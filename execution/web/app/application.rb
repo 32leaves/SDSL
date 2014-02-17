@@ -1,5 +1,6 @@
 require 'opal'
 require 'opal-jquery'
+require 'accordion'
 require 'THREE'
 require 'DatGUI'
 require 'ACE'
@@ -31,9 +32,27 @@ class Runtime
     @settings = GeneralSettings.new
     @gui = nil
 
+    @accordion = Accordion.new(:editors)
+    @accordion.on_open do |element|
+      id = `$('.editor', element).attr('id')`
+      editor = {
+          'geometryShader' => @geometry_editor,
+          'fragmentShader' => @fragment_editor,
+          'pixelShader' => @pixel_editor
+      }[id]
+      editor.resize true unless editor.nil?
+    end
+    Element.find("#useGeometryShader").on(:click) do |evt|
+      @engine.use_geometry_shader = `evt.native.currentTarget.selected`
+    end
+    Element.find("#usePixelShader").on(:click) do |evt|
+      @engine.use_pixel_shader = `evt.native.currentTarget.selected`
+    end
+
     @geometry_editor = ACE::Editor.new "geometryShader"
-    @color_editor = ACE::Editor.new "colorShader"
-    [ @geometry_editor, @color_editor ].each  do |editor|
+    @fragment_editor = ACE::Editor.new "fragmentShader"
+    @pixel_editor = ACE::Editor.new "pixelShader"
+    [ @geometry_editor, @fragment_editor, @pixel_editor ].each  do |editor|
       editor.theme = "ace/theme/monokai"
       editor.mode = "ace/mode/glsl"
     end
@@ -47,9 +66,12 @@ class Runtime
 
     @renderer = THREE::WebGLRenderer.new
     @renderer.set_clear_color( 0xcccccc, 1 )
-    Window.on(:resize) do on_resize; end
+    Window.on(:resize) { on_resize }
 
     @engine = NLSE::Target::Ruby::Engine.new
+    normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 1, 0)
+    @engine.arrangement = (0...10).map {|x| (0...10).map {|y| NLSE::Target::Ruby::Runtime::Vec3.new(x, 0, y) } }.flatten
+      .map {|e| [e * 20, normal] }
   end
 
   def start
@@ -79,35 +101,53 @@ class Runtime
   end
 
   def reload_shaders(&block)
-    reload_shader(:geometry) { reload_shader(:color) { yield if block_given? } }
+    do_pixel = lambda do
+      if @engine.use_pixel_shader
+        reload_shader(:pixel) { yield if block_given? }
+      elsif block_given?
+        yield
+      end
+    end
+    do_geom = lambda do
+      if @engine.use_geometry_shader
+        reload_shader(:geometry) { do_pixel.call }
+      else
+        do_pixel.call
+      end
+    end
+
+    reload_shader(:fragment) { do_geom.call }
   end
 
   def update_shader_computation
     unless @actors.nil?
-      geometry, color = @engine.execute
+      geometry, fragment, pixel = @engine.execute
       geometry.each_with_index {|pos, idx|
-        @actors[idx].set_position pos if settings.updateGeometry
-        @actors[idx].set_color color[idx] if settings.updateColor
-        @actors[idx].set_height color[idx].w
+        @actors[idx].set_position pos.first, pos.last if settings.updateGeometry
+        @actors[idx].set_height fragment[idx].first unless fragment[idx].nil?
+        @actors[idx].set_color pixel[idx].first unless pixel[idx].nil?
       }
-      color
     end
   end
 
   def rebuild_scene
-    @engine.frag_count = @settings.fragCount
     @scene = THREE::Scene.new
     setup_scene
 
     @engine.reset_time
-    @actors = @engine.compute_geometry.map {|pos| THREE::ShapeBlock.new(pos) }
-    @actors.each {|led| @scene.add(led.mesh) }
+    @actors = @engine.arrangement.map {|frag| pos,norm=frag; THREE::ShapeBlock.new(pos, norm) }
+    @actors.each {|actor| @scene.add(actor.mesh) }
     render
   end
 
   def reload_shader(type, &block)
     name = "SH#{Time.now().to_i}#{rand(1000)}"
-    editor = type == :geometry ? @geometry_editor : @color_editor
+    editor = {
+      :geometry => @geometry_editor,
+      :fragment => @fragment_editor,
+      :pixel    => @pixel_editor
+    }[type]
+
     code = editor.value
     HTTP.post("/compile/#{type}/#{name}", :payload => { :code => code } ) do |response|
       editor.clear_markers
@@ -121,10 +161,14 @@ class Runtime
           state = @engine.geometry_shader.shader.uniform_state rescue {}
           @engine.geometry_shader = NLSE::Target::Ruby::GeometryShader.new(shader)
           @engine.geometry_shader.shader.bind_uniform(state)
-        elsif type == :color
-          state = @engine.color_shader.shader.uniform_state rescue {}
-          @engine.color_shader = NLSE::Target::Ruby::ColorShader.new(shader)
-          @engine.color_shader.shader.bind_uniform(state)
+        elsif type == :fragment
+          state = @engine.fragment_shader.shader.uniform_state rescue {}
+          @engine.fragment_shader = NLSE::Target::Ruby::FragmentShader.new(shader)
+          @engine.fragment_shader.shader.bind_uniform(state)
+        elsif type == :pixel
+          state = @engine.pixel_shader.shader.uniform_state rescue {}
+          @engine.pixel_shader = NLSE::Target::Ruby::PixelShader.new(shader)
+          @engine.pixel_shader.shader.bind_uniform(state)
         end
 
         yield if block_given?
@@ -156,12 +200,20 @@ class Runtime
       geom.open
     end
 
-    unless @engine.nil? or @engine.color_shader.nil? or @engine.color_shader.custom_uniforms.empty?
-      color = @gui.add_folder "Color Uniforms"
-      @engine.color_shader.custom_uniforms.each {|uniform|
-        color.add @engine.color_shader.shader, uniform
+    unless @engine.nil? or @engine.fragment_shader.nil? or @engine.fragment_shader.custom_uniforms.empty?
+      fragment = @gui.add_folder "Fragment Uniforms"
+      @engine.fragment_shader.custom_uniforms.each {|uniform|
+        fragment.add @engine.fragment_shader.shader, uniform
       }
-      color.open
+      fragment.open
+    end
+
+    unless @engine.nil? or @engine.pixel_shader.nil? or @engine.pixel_shader.custom_uniforms.empty?
+      pixel = @gui.add_folder "Pixel Uniforms"
+      @engine.pixel_shader.custom_uniforms.each {|uniform|
+        pixel.add @engine.pixel_shader.shader, uniform
+      }
+      pixel.open
     end
 
     view = @gui.add_folder "View"
@@ -204,6 +256,8 @@ class Runtime
     @camera.aspect = width / height
     @renderer.set_size(width, height)
 
+    @accordion.height = `window.innerHeight` - Element.find(".toolbar").height
+    [ @geometry_editor, @fragment_editor, @pixel_editor ].each {|editor| editor.resize true }
     Element.find('body').css(:height => height)
     render
   end
@@ -239,5 +293,6 @@ Document.ready? do
   end
 
   runtime.start
+  `window.runtime = runtime`
 end
 

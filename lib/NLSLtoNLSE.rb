@@ -244,7 +244,7 @@ module NLSL
     class Transformer
 
       def initialize(shader_type)
-        throw "Unknown shader type #{shader_type}" unless shader_type == :color or shader_type == :geometry
+        throw "Unknown shader type #{shader_type}" unless BUILTIN_UNIFORMS.keys.include?(shader_type)
         @shader_type = shader_type
       end
 
@@ -336,7 +336,11 @@ module NLSL
           scope.register_variable(name, element.type.to_sym)
         end
 
-        NLSE::VariableAssignment.new(:name => name, :value => value, :initial => initial)
+        if program.is_uniform? name
+          NLSE::UniformAssignment.new(:name => name, :value => value)
+        else
+          NLSE::VariableAssignment.new(:name => name, :value => value, :initial => initial)
+        end
       end
 
       def transform_unaryassignment(element, scope, program)

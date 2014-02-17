@@ -257,42 +257,79 @@ module NLSE
           @shader = shader
         end
 
-        def execute(time, resolution, fragCount, fragID)
+        def execute(time, resolution, fragCount, fragCoord, fragNormal)
           @shader.bind_uniform(
               :iGlobalTime => time,
               :iResolution => resolution,
               :iFragCount => fragCount,
-              :iFragID => fragID,
-              :nl_FragCoord => 0
+              :iFragCoord => fragCoord,
+              :iFragNormal => fragNormal,
+              :sd_FragCoord => 0,
+              :sd_FragNormal => 0
           )
           @shader.main
-          raise "Shader did not set fragment coordinates" if @shader.nl_FragCoord.nil?
+          raise "Shader did not set fragment coordinates" if @shader.sd_FragCoord.nil?
+          raise "Shader did not set fragment normal" if @shader.sd_FragNormal.nil?
 
-          @shader.nl_FragCoord
+          [ @shader.sd_FragCoord, @shader.sd_FragNormal ]
         end
 
         def custom_uniforms
-          shader.known_uniforms - [ :iGlobalTime, :iResolution, :iFragCount, :iFragID, :nl_FragCoord ]
+          shader.known_uniforms - [ :iGlobalTime, :iResolution, :iFragCount, :iFragCoord, :iFragNormal, :sd_FragCoord, :sd_FragNormal ]
         end
 
       end
-      
+
       #
-      # Serves as interface between color shader code and the rest of the world
+      # Serves as interface between fragment shader code and the rest of the world
       #
-      class ColorShader
+      class FragmentShader
+        attr_reader :shader
+
+        def initialize(shader)
+          raise "Shader is not a NLSE::Target::Ruby::Shader" unless shader.is_a? Shader
+          @shader = shader
+        end
+
+        def execute(time, fragCoord, fragNormal)
+          @shader.bind_uniform(
+              :iGlobalTime => time,
+              :iFragCoord => fragCoord,
+              :iFragNormal => fragNormal,
+              :sd_FragHeight => 0,
+              :sd_FragAngle => 0
+          )
+          @shader.main
+          raise "Shader did not set fragment height" if @shader.sd_FragHeight.nil?
+          raise "Shader did not set fragment angle" if @shader.sd_FragAngle.nil?
+
+          [ @shader.sd_FragHeight, @shader.sd_FragAngle ]
+        end
+
+        def custom_uniforms
+          shader.known_uniforms - [ :iGlobalTime, :iFragCoord, :iFragNormal, :sd_FragHeight, :sd_FragAngle ]
+        end
+
+      end
+
+      #
+      # Serves as interface between pixel shader code and the rest of the world
+      #
+      class PixelShader
         attr_reader :shader
 
         def initialize(shader)
           @shader = shader
         end
 
-        def execute(time, resolution, fragCoord)
+        def execute(time, fragCoord, fragNormal, pixelCoord, pixelResolution)
           @shader.bind_uniform(
               :iGlobalTime => time,
-              :iResolution => resolution,
               :iFragCoord => fragCoord,
-              :nl_FragColor => 0
+              :iFragNormal => fragNormal,
+              :iPixelCoord => pixelCoord,
+              :iPixelResolution => pixelResolution,
+              :sd_PixelColor => 0
           )
 
           @shader.known_uniforms.each do |uniform|
@@ -300,15 +337,28 @@ module NLSE
           end
 
           @shader.main
-          raise "Shader did not set fragment color" if @shader.nl_FragColor.nil?
+          raise "Shader did not set pixel color" if @shader.sd_PixelColor.nil?
 
-          @shader.nl_FragColor
+          @shader.sd_PixelColor
         end
 
         def custom_uniforms
-          shader.known_uniforms - [ :iGlobalTime, :iResolution, :iFragCoord, :nl_FragColor ]
+          shader.known_uniforms - [ :iGlobalTime, :iFragCoord, :iFragNormal, :iPixelCoord, :iPixelResolution, :sd_PixelColor ]
         end
         
+      end
+
+      #
+      # The device profile specifying hardware details such as the pixel resolution
+      # per fragment or the maximum speed with which the display can change shape.
+      #
+      class DeviceProfile
+        attr_reader :pixel_resolution
+
+        def initialize(pixel_resolution = NLSE::Target::Ruby::Vec2.new(1, 1))
+          @pixel_resolution = pixel_resolution
+        end
+
       end
 
       #
@@ -316,14 +366,17 @@ module NLSE
       # managing built-in uniforms, updating iGlobalTime and executing the shaders correctly.
       #
       class Engine
-        attr_accessor :geometry_shader, :color_shader, :frag_count, :resolution
+        attr_accessor :profile, :arrangement, :geometry_shader, :use_geometry_shader, :fragment_shader, :pixel_shader, :use_pixel_shader
 
-        def initialize(geometry_shader = nil, color_shader = nil)
+        def initialize(profile = nil, arrangement = nil, geometry_shader = nil, fragment_shader = nil, pixel_shader = nil)
+          @profile = profile
+          @arrangement = arrangement
           @geometry_shader = geometry_shader
-          @color_shader = color_shader
+          @use_geometry_shader = false
+          @fragment_shader = fragment_shader
+          @pixel_shader = pixel_shader
+          @use_pixel_shader = false
 
-          @frag_count = 16
-          @resolution = Runtime::Vec3.new(100.0, 100.0, 0.0)
           reset_time
         end
 
@@ -340,28 +393,59 @@ module NLSE
         #
         def execute
           current_time = Time.now
-          geometry = geometry_shader.nil? ? [] : compute_geometry(current_time)
-          color = color_shader.nil?       ? [] : compute_color(geometry, current_time)
+          geometry = geometry_shader.nil? ? arrangement : compute_geometry(arrangement, current_time)
+          fragment = fragment_shader.nil? ? [] : compute_fragment(geometry, current_time)
+          pixel    = pixel_shader.nil?    ? [] : compute_pixel(geometry, current_time)
 
-          [ geometry, color ]
+          [ geometry, fragment, pixel ]
         end
 
         #
-        # Computes the color for the given geometry, This method can be used to probe
-        # the color field generated by the color shader.
+        # Computes the pixel values each fragment.
         #
-        def compute_color(geometry, current_time = Time.now)
+        def compute_pixel(geometry, current_time = Time.now)
           time = (current_time - @start_time)
-          geometry.map {|geom| color_shader.execute(time, @resolution, geom) }
+          geometry.map do |geom|
+            (0...@profile.pixel_resolution.x).flat_map do |x|
+              (0...@profile.pixel_resolution.y).map do |y|
+                pixelCoord = NLSE::Target::Ruby::Vec2.new(x, y)
+                pixel_shader.(time, geom.first, geom.last, pixelCoord, @profile.pixel_resolution)
+              end
+            end
+          end
         end
 
         #
-        # Computes the geometry based on the frag IDs. Returns an array of frag_count
-        # Runtime::Vec3 positions.
+        # Computes the fragment state for the given geometry.
         #
-        def compute_geometry(current_time = Time.now)
+        def compute_fragment(geometry, current_time = Time.now)
           time = (current_time - @start_time)
-          (0...@frag_count).map {|i| geometry_shader.execute(time, @resolution, @frag_count, i) }
+          geometry.map {|geom| fragment_shader.execute(time, geom.first, geom.last) }
+        end
+
+        # thanks to the non-existent Math support in opal we need to implement min/max ourselves
+        def min(a, b); (b.nil? or a < b) ? a : b; end
+        def max(a, b); (b.nil? or a > b) ? a : b; end
+
+        #
+        # Computes the geometry based on the arrangement. Returns an array of frag_count
+        # [ position, normal ].
+        #
+        def compute_geometry(arrangement, current_time = Time.now)
+          time = (current_time - @start_time)
+
+          lo,hi = arrangement.inject([ [ nil, nil, nil ], [ nil, nil, nil ] ]) do |m, e|
+            lo, hi = m
+
+            lo = arrangement.map {|f| f[0].to_a }.inject(lo) {|l, e| e.zip(l).map {|k| min(k.first, k.last) } }
+            hi = arrangement.map {|f| f[0].to_a }.inject(hi) {|l, e| e.zip(l).map {|k| max(k.first, k.last) } }
+
+            [ lo, hi ]
+          end
+          resolution = lo.zip(hi).map {|e| e.last - e.first }
+          resolution = NLSE::Target::Ruby::Runtime::Vec3.new(resolution[0], resolution[1], resolution[2])
+
+          arrangement.map {|frag| geometry_shader.execute(time, resolution, arrangement.length, frag.first, frag.last) }
         end
 
       end
@@ -446,10 +530,11 @@ module NLSE
         end
 
         def transform_variableassignment(root)
-          output_variables = [ :nl_FragCoord, :nl_FragColor ]
-          prefix = (output_variables.include?(root.name.to_s.to_sym)) ? "@" : ""
+          "#{root.name} = #{transform root.value}"
+        end
 
-          "#{prefix}#{root.name} = #{transform root.value}"
+        def transform_uniformassignment(root)
+          "@#{root.name} = #{transform root.value}"
         end
 
         def transform_componentaccess(root)

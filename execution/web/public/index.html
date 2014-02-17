@@ -21,7 +21,39 @@
     <div class="renderContainer" id="canvasContainer">
 
     </div>
-    <div class="editorContainer" id="arrangementContainer">
+    <div class="editorContainer">
+        <ul class="accordion" id="editors">
+            <li>
+                <small>ARRANGEMENT</small>
+                <div class="editor" id="arrangementView">
+
+                </div>
+            </li>
+            <li>
+                <small>GEOMETRY</small><input type="checkbox" id="useGeometryShader">
+                <div class="editor" id="geometryShader">void main() {
+    sd_FragCoord = iFragCoord;
+    sd_FragNormal = iFragNormal;
+}
+</div>
+            </li>
+            <li>
+                <small>FRAGMENT</small>
+                <div class="editor" id="fragmentShader">uniform float height;
+uniform float angle;
+void main() {
+    sd_FragHeight = height;
+    sd_FragAngle  = angle;
+}
+</div>
+            </li>
+            <li>
+                <small>PXEL</small><input type="checkbox" id="usePixelShader">
+                <div class="editor" id="pixelShader"></div>
+            </li>
+        </ul>
+    </div>
+    <!-- div class="editorContainer" id="arrangementContainer">
         <small>ARRANGEMENT</small><br />
         <div class="arrangement">
             <span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><span class="cylinder"></span><br />
@@ -50,6 +82,6 @@ void main() {
         bluetone,
         0.5 + range * sin(speed * iGlobalTime + range * 0.5 * sqrt((iFragCoord.x * iFragCoord.x) + (iFragCoord.z * iFragCoord.z))));
 }</div>
-    </div>
+    </div -->
 </body>
 </html>

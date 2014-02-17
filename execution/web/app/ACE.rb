@@ -45,6 +45,10 @@ module ACE
       nil
     end
 
+    def resize(force)
+      `self.editor.resize(force)`
+    end
+
   end
 
 end
