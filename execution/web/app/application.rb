@@ -29,7 +29,6 @@ class Runtime
   attr_reader :scene, :renderer, :camera, :engine, :gui, :settings
 
   def initialize
-    @settings = GeneralSettings.new
     @gui = nil
 
     @accordion = Accordion.new(:editors)
@@ -98,7 +97,7 @@ class Runtime
 
   def rebuild
     reload_shaders do
-      rebuild_scene if settings.initGeometry
+      rebuild_scene
       rebuild_gui
     end
   end
@@ -126,7 +125,7 @@ class Runtime
     unless @actors.nil?
       geometry, fragment, pixel = @engine.execute
       geometry.each_with_index {|pos, idx|
-        @actors[idx].set_position pos.first, pos.last if settings.updateGeometry
+        #@actors[idx].set_position pos.first, pos.last
         @actors[idx].set_height fragment[idx].first unless fragment[idx].nil?
         @actors[idx].set_color pixel[idx].first unless pixel[idx].nil?
       }
@@ -138,7 +137,9 @@ class Runtime
     setup_scene
 
     @engine.reset_time
-    @actors = @engine.arrangement.map {|frag| pos,norm=frag; THREE::ShapeBlock.new(pos, norm) }
+    offset = @engine.pixel_resolution * -0.5
+    actor_arrangement = @engine.arrangement.map {|e| p,n=e; [p + offset, n] }
+    @actors = actor_arrangement.map {|frag| pos,norm=frag; THREE::ShapeBlock.new(pos, norm) }
     @actors.each {|actor| @scene.add(actor.mesh) }
     render
   end
@@ -188,12 +189,10 @@ class Runtime
     gui.destroy unless gui.nil?
 
     @gui = DatGUI::GUI.new self
-    general = @gui.add_folder "General"
-    general.add settings, "initGeometry"
-    general.add settings, "updateGeometry"
-    general.add settings, "updateColor"
-    general.add settings, "fragCount"
-    general.open
+    res = @gui.add_folder "Pixel Resolution"
+    res.add @engine.profile.pixel_resolution, "x"
+    res.add @engine.profile.pixel_resolution, "y"
+    res.open
 
     unless @engine.nil? or @engine.geometry_shader.nil? or @engine.geometry_shader.custom_uniforms.empty?
       geom = @gui.add_folder "Geometry Uniforms"
@@ -263,20 +262,6 @@ class Runtime
     [ @geometry_editor, @fragment_editor, @pixel_editor ].each {|editor| editor.resize true }
     Element.find('body').css(:height => height)
     render
-  end
-
-end
-
-class GeneralSettings
-  attr_accessor :initGeometry, :updateGeometry, :updateColor, :fragCount
-
-  def initialize(runtime)
-    @runtime = runtime
-
-    @initGeometry = true
-    @updateGeometry = false
-    @updateColor = true
-    @fragCount = 64
   end
 
 end

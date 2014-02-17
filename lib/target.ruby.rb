@@ -434,6 +434,10 @@ module NLSE
         def compute_geometry(arrangement, current_time = Time.now)
           time = (current_time - @start_time)
 
+          arrangement.map {|frag| geometry_shader.execute(time, pixel_resolution, arrangement.length, frag.first, frag.last) }
+        end
+
+        def pixel_resolution
           lo,hi = arrangement.inject([ [ nil, nil, nil ], [ nil, nil, nil ] ]) do |m, e|
             lo, hi = m
 
@@ -443,9 +447,7 @@ module NLSE
             [ lo, hi ]
           end
           resolution = lo.zip(hi).map {|e| e.last - e.first }
-          resolution = NLSE::Target::Ruby::Runtime::Vec3.new(resolution[0], resolution[1], resolution[2])
-
-          arrangement.map {|frag| geometry_shader.execute(time, resolution, arrangement.length, frag.first, frag.last) }
+          NLSE::Target::Ruby::Runtime::Vec3.new(resolution[0], resolution[1], resolution[2])
         end
 
       end
