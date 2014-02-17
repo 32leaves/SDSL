@@ -44,9 +44,11 @@ class Runtime
     end
     Element.find("#useGeometryShader").on(:click) do |evt|
       @engine.use_geometry_shader = `evt.native.currentTarget.selected`
+      rebuild
     end
     Element.find("#usePixelShader").on(:click) do |evt|
       @engine.use_pixel_shader = `evt.native.currentTarget.selected`
+      rebuild
     end
 
     @geometry_editor = ACE::Editor.new "geometryShader"
@@ -69,6 +71,7 @@ class Runtime
     Window.on(:resize) { on_resize }
 
     @engine = NLSE::Target::Ruby::Engine.new
+    @engine.profile = NLSE::Target::Ruby::DeviceProfile.new
     normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 1, 0)
     @engine.arrangement = (0...10).map {|x| (0...10).map {|y| NLSE::Target::Ruby::Runtime::Vec3.new(x, 0, y) } }.flatten
       .map {|e| [e * 20, normal] }

@@ -49,7 +49,13 @@ void main() {
             </li>
             <li>
                 <small>PXEL</small><input type="checkbox" id="usePixelShader">
-                <div class="editor" id="pixelShader"></div>
+                <div class="editor" id="pixelShader">uniform float red;
+uniform float green;
+uniform float blue;
+
+void main() {
+    sd_PixelColor = vec4(red, green, blue, 1.0);
+}</div>
             </li>
         </ul>
     </div>

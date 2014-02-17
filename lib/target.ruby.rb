@@ -355,7 +355,7 @@ module NLSE
       class DeviceProfile
         attr_reader :pixel_resolution
 
-        def initialize(pixel_resolution = NLSE::Target::Ruby::Vec2.new(1, 1))
+        def initialize(pixel_resolution = NLSE::Target::Ruby::Runtime::Vec2.new(1, 1))
           @pixel_resolution = pixel_resolution
         end
 
@@ -406,12 +406,12 @@ module NLSE
         def compute_pixel(geometry, current_time = Time.now)
           time = (current_time - @start_time)
           geometry.map do |geom|
-            (0...@profile.pixel_resolution.x).flat_map do |x|
+            (0...@profile.pixel_resolution.x).map do |x|
               (0...@profile.pixel_resolution.y).map do |y|
-                pixelCoord = NLSE::Target::Ruby::Vec2.new(x, y)
-                pixel_shader.(time, geom.first, geom.last, pixelCoord, @profile.pixel_resolution)
+                pixelCoord = NLSE::Target::Ruby::Runtime::Vec2.new(x, y)
+                pixel_shader.execute(time, geom.first, geom.last, pixelCoord, @profile.pixel_resolution)
               end
-            end
+            end.flatten
           end
         end
 
