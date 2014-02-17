@@ -205,7 +205,8 @@ class Runtime
     unless @engine.nil? or @engine.fragment_shader.nil? or @engine.fragment_shader.custom_uniforms.empty?
       fragment = @gui.add_folder "Fragment Uniforms"
       @engine.fragment_shader.custom_uniforms.each {|uniform|
-        fragment.add @engine.fragment_shader.shader, uniform
+        uniform_type = @engine.fragment_shader.shader.send(uniform).class.name
+        fragment.add @engine.fragment_shader.shader, uniform if uniform_type == "Numeric"
       }
       fragment.open
     end

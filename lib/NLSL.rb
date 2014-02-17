@@ -107,8 +107,8 @@ module NLSL
 
   module Array
 
-    def value
-      text_value[1..-2].to_i
+    def accessor
+      expression
     end
 
   end
@@ -266,7 +266,7 @@ module NLSL
 
     def array
       r = elements.select {|e| e.is_a? Array }.first
-      r.nil? ? nil : r.value
+      r.nil? ? nil : r.accessor
     end
 
   end

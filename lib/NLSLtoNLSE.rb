@@ -205,10 +205,10 @@ module NLSL
     # Compared to matrix array access there is no bounds checking.
     #
     SAMPLER_ARRAY_ACCESS = {
-      :tex1 => :float,
-      :tex2 => :vec2,
-      :tex3 => :vec3,
-      :tex4 => :vec4
+      :sampler1D => :float,
+      :sampler2D => :vec2,
+      :sampler3D => :vec3,
+      :sampler4D => :vec4
     }
 
     #
@@ -401,10 +401,10 @@ module NLSL
             _error element, "Column index out of bounds #{array} > #{type}" if array >= access_spec.first
 
             type = access_spec.last
-            result = NLSE::MatrixColumnAccess.new(:type => type, :value => result, :index => array)
+            result = NLSE::MatrixColumnAccess.new(:type => type, :value => result, :index => transform(array, scope, program))
           elsif SAMPLER_ARRAY_ACCESS.keys.include?(type)
             type = SAMPLER_ARRAY_ACCESS[type]
-            result = NLSE::SamplerAccess.new(:type => type, :value => result, :index => array)
+            result = NLSE::SamplerAccess.new(:type => type, :value => result, :index => transform(array, scope, program))
           else
             _error element, "Array access is only valid for matrices and sampler"
           end

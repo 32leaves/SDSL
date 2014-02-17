@@ -530,6 +530,10 @@ module NLSE
               when :vec4; "vec4(0.0, 0.0, 0.0, 0.0)"
               when :float; "1.0"
               when :int; "1"
+              when :sampler1D; []
+              when :sampler2D; []
+              when :sampler3D; []
+              when :sampler4D; []
              end
 
             "@#{uniform.name} = #{value}"
@@ -565,7 +569,11 @@ module NLSE
         end
 
         def transform_matrixcolumnaccess(root)
-          "#{transform root.value}[#{root.index}]"
+          "#{transform root.value}[#{transform root.index}]"
+        end
+
+        def transform_sampleraccess(root)
+          "#{transform root.value}[#{transform root.index}]"
         end
 
         def transform_functioncall(root)

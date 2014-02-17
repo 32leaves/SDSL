@@ -59,7 +59,7 @@ grammar NLSL
   end
 
   rule uniformtype
-    ('tex1' / 'tex2' / 'tex3' / 'tex4') <TypeExpression> / vartype
+    ('sampler1D' / 'sampler2D' / 'sampler3D' / 'sampler4D') <TypeExpression> / vartype
   end
 
   rule rettype
@@ -141,7 +141,7 @@ grammar NLSL
   end
 
   rule array
-    '[' ([0-9]+) ']' <Array>
+    '[' expression ']' <Array>
   end
 
   rule vectorcomp
