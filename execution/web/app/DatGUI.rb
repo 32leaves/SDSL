@@ -21,41 +21,31 @@ module DatGUI
 
     def add(ref, id, constraint = nil)
       if constraint.nil?
-        `self.parent.add(ref, id)`
+        Field.new `self.parent.add(ref, id)`
       else
-        `self.parent.add(ref, id, constraint)`
+        Field.new `self.parent.add(ref, id, constraint)`
       end
     end
 
   end
 
   class Field
+    attr_accessor :controller
 
-    def initialize(parent)
-      @parent = parent
+    def initialize(controller)
+      @controller = controller
     end
 
-    def min(val)
-      `self.parent.min(val)`
+    def on_finish(&block)
+      `self.controller.onFinishChange(function() { #{block.call} })`
     end
 
-    def max(val)
-      `self.parent.max(val)`
-    end
-
-    def step(val)
-      `self.parent.step(val)`
-    end
-
-    def on_change(&block)
-      `self.parent.onChange(block.$call)`
-    end
-
-    def on_finish_change(&block)
-      `self.parent.onFinishChange(block.$call)`
+    def name=(value)
+      `self.controller.name(value)`
     end
 
   end
+
 
   class GUI < Folder
 
