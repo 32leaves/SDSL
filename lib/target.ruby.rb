@@ -500,6 +500,8 @@ module NLSE
           class #{class_name} < NLSE::Target::Ruby::Shader
             include NLSE::Target::Ruby::Runtime
 
+            UNIFORMS = { #{root.uniforms.map {|k,v| ":#{k} => :#{v.type}" }.join(", ")} }
+
             #{transform root.uniforms.values}
             #{transform root.functions.values.flatten.reject {|e| e.builtin? }}
 
@@ -508,7 +510,11 @@ module NLSE
             end
 
             def known_uniforms
-              [ #{root.uniforms.keys.map {|k| ":#{k}" }.join(", ")} ]
+              UNIFORMS.keys
+            end
+
+            def uniform_type(name)
+              UNIFORMS[name]
             end
 
             def uniform_exists?(name)

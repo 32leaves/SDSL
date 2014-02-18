@@ -4,6 +4,7 @@ require 'accordion'
 require 'THREE'
 require 'DatGUI'
 require 'ACE'
+require 'sampler_websocket_adapter'
 require 'target.ruby'
 
 #
@@ -161,19 +162,23 @@ class Runtime
         `eval(new_class)`
 
         shader = `eval("Opal." + name + ".$new()")`
-        if type == :geometry
-          state = @engine.geometry_shader.shader.uniform_state rescue {}
-          @engine.geometry_shader = NLSE::Target::Ruby::GeometryShader.new(shader)
-          @engine.geometry_shader.shader.bind_uniform(state)
-        elsif type == :fragment
-          state = @engine.fragment_shader.shader.uniform_state rescue {}
-          @engine.fragment_shader = NLSE::Target::Ruby::FragmentShader.new(shader)
-          @engine.fragment_shader.shader.bind_uniform(state)
-        elsif type == :pixel
-          state = @engine.pixel_shader.shader.uniform_state rescue {}
-          @engine.pixel_shader = NLSE::Target::Ruby::PixelShader.new(shader)
-          @engine.pixel_shader.shader.bind_uniform(state)
-        end
+        state = @engine.send("#{type}_shader".to_s).shader.uniform_state rescue {}
+        new_wrapper = {
+            :geometry => NLSE::Target::Ruby::GeometryShader,
+            :fragment => NLSE::Target::Ruby::FragmentShader,
+            :pixel    => NLSE::Target::Ruby::PixelShader
+        }[type].new(shader)
+        @engine.send("#{type}_shader=".to_s, new_wrapper)
+        shader.bind_uniform(state)
+        shader.bind_uniform(shader.known_uniforms
+                            .select {|k| shader.uniform_type(k).to_s[0...7] == "sampler" }
+                            .reject {|k| shader.send(k).is_a? SamplerWebsocketAdapter }
+                            .inject({}) do |m, k|
+
+          dim = shader.uniform_type(k).to_s[-3...-2].to_i
+          m[k] = SamplerWebsocketAdapter.new dim
+          m
+        end)
 
         yield if block_given?
       else
@@ -194,29 +199,25 @@ class Runtime
     res.add @engine.profile.pixel_resolution, "y"
     res.open
 
-    unless @engine.nil? or @engine.geometry_shader.nil? or @engine.geometry_shader.custom_uniforms.empty?
-      geom = @gui.add_folder "Geometry Uniforms"
-      @engine.geometry_shader.custom_uniforms.each {|uniform|
-        geom.add @engine.geometry_shader.shader, uniform
-      }
-      geom.open
-    end
+    unless @engine.nil?
+      [ @engine.geometry_shader, @engine.fragment_shader, @engine.pixel_shader ]
+        .compact.reject {|shader| shader.custom_uniforms.empty?  }.each do |shader|
 
-    unless @engine.nil? or @engine.fragment_shader.nil? or @engine.fragment_shader.custom_uniforms.empty?
-      fragment = @gui.add_folder "Fragment Uniforms"
-      @engine.fragment_shader.custom_uniforms.each {|uniform|
-        uniform_type = @engine.fragment_shader.shader.send(uniform).class.name
-        fragment.add @engine.fragment_shader.shader, uniform if uniform_type == "Numeric"
-      }
-      fragment.open
-    end
+        folder = @gui.add_folder shader.class.name.split("::").last
+        shader.custom_uniforms.each do |uniform|
+          uniform_type = shader.shader.uniform_type(uniform)
 
-    unless @engine.nil? or @engine.pixel_shader.nil? or @engine.pixel_shader.custom_uniforms.empty?
-      pixel = @gui.add_folder "Pixel Uniforms"
-      @engine.pixel_shader.custom_uniforms.each {|uniform|
-        pixel.add @engine.pixel_shader.shader, uniform
-      }
-      pixel.open
+          if uniform_type == :float or uniform_type == :int
+            folder.add shader.shader, uniform
+          elsif [ :sampler1D, :sampler2D, :sampler3D, :sampler4D ].include?(uniform_type)
+            adapter = shader.shader.send(uniform)
+            controller = folder.add adapter, "url"
+            controller.name = uniform
+            controller.on_finish { adapter.restart_connection }
+          end
+        end
+        folder.open
+      end
     end
 
     view = @gui.add_folder "View"
