@@ -175,7 +175,7 @@ class Runtime
                             .reject {|k| shader.send(k).is_a? SamplerWebsocketAdapter }
                             .inject({}) do |m, k|
 
-          dim = shader.uniform_type(k).to_s[-3...-2].to_i
+          dim = shader.uniform_type(k).to_s[-2...-1].to_i
           m[k] = SamplerWebsocketAdapter.new dim
           m
         end)
