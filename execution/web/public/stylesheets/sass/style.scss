@@ -4,6 +4,7 @@ $toolbarHeight: 40px;
 $editorWidth: 30%;
 $accordionTitleHeight: 30px;
 $errorColor: #ff0035;
+$inspectorColor: #e8d300;
 
 body {
   overflow: hidden;
@@ -50,7 +51,7 @@ body {
     right: 20%;
   }
 
-  .compile {
+  .inspect {
     left: 80%;
     right: 10%;
   }
@@ -96,7 +97,7 @@ body {
   }
 }
 
-#rt_errorbox {
+.box {
   position: absolute;
   width: $editorWidth;
   left: $editorWidth;
@@ -130,6 +131,62 @@ body {
     font-weight: bold;
     font-size: 90%;
     padding: 2em;
+  }
+}
+
+#rt_errorbox {
+  z-index: -1;
+
+  :after {
+    border-right-color: $errorColor;
+  }
+
+  :before {
+    border-right-color: $errorColor;
+  }
+
+  .text {
+    background-color: $errorColor;
+  }
+}
+#rt_inspector {
+
+  :after {
+    border-right-color: $inspectorColor;
+  }
+
+  :before {
+    border-right-color: $inspectorColor;
+  }
+
+  .close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: white;
+    cursor: pointer;
+  }
+  .text {
+    background-color: $inspectorColor;
+    color: black;
+    font-weight: normal;
+    max-height: 50%;
+    overflow-y: auto;
+  }
+  select {
+    width: 100%;
+    margin-bottom: 1em;
+  }
+  tr {
+    line-height: 1.25em;
+  }
+  .name {
+    font-weight: bold;
+    padding-right: 1em;
+  }
+  .comp {
+    width: 4em;
+    display: inline-block;
   }
 }
 

@@ -1,6 +1,7 @@
 require 'opal'
 require 'opal-jquery'
 require 'accordion'
+require 'shader_inspector'
 require 'THREE'
 require 'DatGUI'
 require 'ACE'
@@ -27,7 +28,7 @@ end
 
 
 class Runtime
-  attr_reader :scene, :renderer, :camera, :engine, :gui, :settings
+  attr_reader :scene, :renderer, :camera, :engine, :gui, :settings, :inspector
 
   def initialize
     @gui = nil
@@ -75,6 +76,9 @@ class Runtime
     normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 1, 0)
     @engine.arrangement = (0...10).map {|x| (0...10).map {|y| NLSE::Target::Ruby::Runtime::Vec3.new(x, 0, y) } }.flatten
       .map {|e| [e * 20, normal] }
+
+
+    @inspector = ShaderInspector.new @engine
   end
 
   def start
@@ -293,6 +297,8 @@ Document.ready? do
     if evt.key_code == 13 and `evt.native.shiftKey`
       evt.prevent_default
       runtime.rebuild
+    elsif evt.key_code == 9 and `evt.native.ctrlKey`
+      runtime.inspector.inspect_active_editor
     end
   end
 

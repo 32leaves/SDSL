@@ -15,7 +15,7 @@
     <div class="toolbar">
         <span class="logo">SDSL</span>
         <span class="run button" id="runButton">RUN</span>
-        <span class="compile button">\/</span>
+        <span class="inspect button">I</span>
         <span class="settings button">S</span>
     </div>
     <div class="renderContainer" id="canvasContainer">
@@ -61,9 +61,23 @@ void main() {
         </ul>
     </div>
 
-    <div id="rt_errorbox">
-        <div class="arrow"></div>
+    <div id="rt_errorbox" class="box">
         <div class="text"></div>
+    </div>
+    <div id="rt_inspector" class="box">
+        <div class="close">X</div>
+        <div class="text">
+            <table>
+                <tr>
+                    <td class="name">iFragCoord</td>
+                    <td class="value">x=1 y=29 z=10</td>
+                </tr>
+                <tr>
+                    <td class="name">iFragCoord</td>
+                    <td class="value">x=1 y=29 z=10</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
 </html>

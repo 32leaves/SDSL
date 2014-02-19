@@ -95,6 +95,11 @@ module NLSE
             [ x, y, z ]
           end
 
+
+          def to_html
+            to_a.map {|e| "<span class=\"comp\">#{e}</span>" }.join
+          end
+
         end
         class Vec4
           attr_accessor :x, :y, :z, :w
@@ -153,6 +158,10 @@ module NLSE
 
           def to_a
             [ x, y, z, w ]
+          end
+
+          def to_html
+            to_a.join(" ")
           end
 
         end
