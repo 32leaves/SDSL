@@ -3,6 +3,7 @@
 $toolbarHeight: 40px;
 $editorWidth: 30%;
 $accordionTitleHeight: 30px;
+$errorColor: #ff0035;
 
 body {
   overflow: hidden;
@@ -89,6 +90,47 @@ body {
     overflow: hidden;
     border-bottom: 1px solid #4f4f4f;
   }
+
+  .shader_rt_error {
+    background-color: $errorColor;
+  }
+}
+
+#rt_errorbox {
+  position: absolute;
+  width: $editorWidth;
+  left: $editorWidth;
+  top: 88px;
+  display: none;
+
+  :after, :before {
+    border: solid transparent;
+    content: ' ';
+    height: 0;
+    right: 100%;
+    position: absolute;
+    width: 0;
+  }
+
+  :after {
+    border-width: $accordionTitleHeight / 2 - 8;
+    border-right-color: $errorColor;
+    top: $accordionTitleHeight / 2;
+  }
+
+  :before {
+    border-width: $accordionTitleHeight / 2;
+    border-right-color: $errorColor;
+    top: $accordionTitleHeight / 2;
+  }
+
+  .text {
+    background-color: $errorColor;
+    color: white;
+    font-weight: bold;
+    font-size: 90%;
+    padding: 2em;
+  }
 }
 
 #useGeometryShader, #usePixelShader {
@@ -110,6 +152,7 @@ body {
     bottom: 0px;
   }
 }
+
 .error {
   position: absolute;
   background-color: rgba(255, 10, 22, 0.2);

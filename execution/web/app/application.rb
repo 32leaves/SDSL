@@ -123,14 +123,28 @@ class Runtime
   end
 
   def update_shader_computation
-    unless @actors.nil?
+    errorbox = Element.find("#rt_errorbox")
+
+    begin
       geometry, fragment, pixel = @engine.execute
       geometry.each_with_index {|pos, idx|
         #@actors[idx].set_position pos.first, pos.last
         @actors[idx].set_height fragment[idx].first unless fragment[idx].nil?
         @actors[idx].set_color pixel[idx].first unless pixel[idx].nil?
       }
-    end
+
+      errorbox.hide
+    rescue => e
+      shader_type = e.class.name.split("::").last.gsub("ShaderRuntimeException", "").downcase
+      editor_id = "#{shader_type}Shader"
+
+      li_element = Element.find("##{editor_id}").closest("li")
+      errorbox.css :top => `li_element.offset().top`
+      errorbox.find(".text").text e
+      errorbox.show
+
+      #Element.find("##{editor_id}").closest("li").add_class :shader_rt_error
+    end unless @actors.nil?
   end
 
   def rebuild_scene

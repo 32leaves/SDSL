@@ -373,6 +373,13 @@ module NLSE
 
       end
 
+      class GeometryShaderRuntimeException < Exception
+      end
+      class FragmentShaderRuntimeException < Exception
+      end
+      class PixelShaderRuntimeException < Exception
+      end
+
       #
       # Utility class to execute shaders in a Ruby environment. This class takes care of
       # managing built-in uniforms, updating iGlobalTime and executing the shaders correctly.
@@ -406,10 +413,26 @@ module NLSE
         # where the index corresponds to the respective FragID
         #
         def execute
+          geometry = fragment = pixel = []
+
           current_time = Time.now
-          geometry = geometry_shader.nil? ? arrangement : compute_geometry(arrangement, current_time)
-          fragment = fragment_shader.nil? ? [] : compute_fragment(geometry, current_time)
-          pixel    = pixel_shader.nil?    ? [] : compute_pixel(geometry, current_time)
+          begin
+            geometry = geometry_shader.nil? ? arrangement : compute_geometry(arrangement, current_time)
+          rescue => e
+            raise GeometryShaderRuntimeException, e
+          end
+
+          begin
+            fragment = fragment_shader.nil? ? [] : compute_fragment(geometry, current_time)
+          rescue => e
+            raise FragmentShaderRuntimeException, e
+          end
+
+          begin
+            pixel    = pixel_shader.nil?    ? [] : compute_pixel(geometry, current_time)
+          rescue => e
+            raise PixelShaderRuntimeException, e
+          end
 
           [ geometry, fragment, pixel ]
         end
