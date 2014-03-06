@@ -1,6 +1,8 @@
 require 'bundler'
 Bundler.require
 
+require 'opal/sprockets'
+
 map '/assets' do
   env = Opal::Environment.new
   env.append_path 'app'

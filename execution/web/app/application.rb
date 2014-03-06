@@ -1,5 +1,6 @@
 require 'opal'
 require 'opal-jquery'
+require 'native'
 require 'accordion'
 require 'shader_inspector'
 require 'THREE'
@@ -69,7 +70,7 @@ class Runtime
 
     @renderer = THREE::WebGLRenderer.new
     @renderer.set_clear_color( 0xcccccc, 1 )
-    Window.on(:resize) { on_resize }
+    Element.find(`window`).on(:resize) { on_resize }
 
     @engine = NLSE::Target::Ruby::Engine.new
     @engine.profile = NLSE::Target::Ruby::DeviceProfile.new
@@ -172,6 +173,7 @@ class Runtime
     }[type]
 
     code = editor.value
+    `console.log(code)`
     HTTP.post("/compile/#{type}/#{name}", :payload => { :code => code } ) do |response|
       editor.clear_markers
       editor.clear_annotations
