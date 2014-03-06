@@ -7,6 +7,7 @@ require 'THREE'
 require 'DatGUI'
 require 'ACE'
 require 'sampler_websocket_adapter'
+require 'js_zip'
 require 'target.ruby'
 
 #
@@ -80,6 +81,10 @@ class Runtime
 
 
     @inspector = ShaderInspector.new @engine
+  end
+
+  def get_shader_code
+    [ @geometry_editor, @fragment_editor, @pixel_editor ].map {|e| e.value }
   end
 
   def start
@@ -291,6 +296,18 @@ end
 Document.ready? do
   runtime = Runtime.new
   Element.find('#canvasContainer') << runtime.renderer.dom_element
+
+  Element.find('.inspect').on(:click) do
+    geom, frag, pixel = runtime.get_shader_code
+
+    zip = JSZip::ZipFile.new
+    zip.file("geometry.sdsl", geom)
+    zip.file("fragment.sdsl", frag)
+    zip.file("pixel.sdsl", pixel)
+    content = zip.to_base64
+
+    `location.href="data:application/zip;base64,"+content`
+  end
 
   Element.find('#runButton').on(:click) do runtime.rebuild; end
   runtime.rebuild

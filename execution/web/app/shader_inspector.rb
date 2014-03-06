@@ -9,7 +9,7 @@ class ShaderInspector
 
     Document.ready? do
       Element.find("#rt_inspector .close").on(:click) do @element.hide; end
-      Element.find(".inspect").on(:click) do inspect_active_editor; end
+      #Element.find(".inspect").on(:click) do inspect_active_editor; end
     end
   end
 
