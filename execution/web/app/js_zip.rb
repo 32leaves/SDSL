@@ -14,8 +14,12 @@ module JSZip
       `self.zip.file(name, content)`
     end
 
+    def to_blob
+      `self.zip.generate({type:"blob"})`
+    end
+
     def to_blob_url
-      blob = `self.zip.generate({type:"blob"})`
+      blob = to_blob
       `window.URL.createObjectURL(blob)`
     end
 

@@ -4,7 +4,10 @@
     <list default="true" id="5968effc-3853-4def-b38e-6e061c9905c8" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/SDSL.iml" afterPath="$PROJECT_DIR$/.idea/SDSL.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/app/application.rb" afterPath="$PROJECT_DIR$/execution/web/app/application.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/public/index.html" afterPath="$PROJECT_DIR$/execution/web/public/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/app/js_zip.rb" afterPath="$PROJECT_DIR$/execution/web/app/js_zip.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/app/shader_inspector.rb" afterPath="$PROJECT_DIR$/execution/web/app/shader_inspector.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/public/stylesheets/style.css" afterPath="$PROJECT_DIR$/execution/web/public/stylesheets/style.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss" afterPath="$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -44,7 +47,7 @@
       <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/execution/web/public/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="34" selection-start="268" selection-end="268" vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="1513">
+            <state line="22" column="25" selection-start="804" selection-end="804" vertical-scroll-proportion="-9.615385" vertical-offset="124" max-vertical-offset="1564">
               <folding />
             </state>
           </provider>
@@ -59,19 +62,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="application.rb" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="application.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/execution/web/app/application.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="314" column="45" selection-start="9254" selection-end="9254" vertical-scroll-proportion="0.0" vertical-offset="5191" max-vertical-offset="5661">
+            <state line="179" column="23" selection-start="4861" selection-end="4861" vertical-scroll-proportion="0.37950137" vertical-offset="2906" max-vertical-offset="5831">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="style.scss" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="style.scss" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="152" column="14" selection-start="2372" selection-end="2372" vertical-scroll-proportion="0.8375796" vertical-offset="2321" max-vertical-offset="4437">
+            <state line="58" column="7" selection-start="880" selection-end="880" vertical-scroll-proportion="-4.923077" vertical-offset="858" max-vertical-offset="4437">
               <folding />
             </state>
           </provider>
@@ -113,15 +116,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="shader_inspector.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/execution/web/app/shader_inspector.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="19" selection-start="518" selection-end="518" vertical-scroll-proportion="0.0" vertical-offset="125" max-vertical-offset="782">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FindManager">
@@ -147,12 +141,12 @@
         <option value="$PROJECT_DIR$/lib/target.ruby.rb" />
         <option value="$PROJECT_DIR$/execution/web/Gemfile" />
         <option value="$PROJECT_DIR$/execution/web/config.ru" />
-        <option value="$PROJECT_DIR$/execution/web/public/index.html" />
-        <option value="$PROJECT_DIR$/execution/web/app/js_zip.rb" />
         <option value="$PROJECT_DIR$/execution/web/app/accordion.rb" />
-        <option value="$PROJECT_DIR$/execution/web/app/application.rb" />
         <option value="$PROJECT_DIR$/execution/web/app/shader_inspector.rb" />
+        <option value="$PROJECT_DIR$/execution/web/app/js_zip.rb" />
+        <option value="$PROJECT_DIR$/execution/web/public/index.html" />
         <option value="$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss" />
+        <option value="$PROJECT_DIR$/execution/web/app/application.rb" />
       </list>
     </option>
   </component>
@@ -266,59 +260,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SDSL" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SDSL" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="execution" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vendor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SDSL" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SDSL" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="execution" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
+              <option name="myItemId" value="native" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -344,7 +286,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="recentsLimit" value="5" />
-    <property name="SearchEverywhereHistory" value="&#10;index.h" />
+    <property name="SearchEverywhereHistory" value="js&#10;index.h" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="options.lastSelected" value="org.jetbrains.plugins.ruby.settings.RubyActiveModuleSdkConfigurable" />
     <property name="options.splitter.main.proportions" value="0.3" />
@@ -548,13 +490,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/execution/web/app/shader_inspector.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="7" selection-start="262" selection-end="262" vertical-scroll-proportion="0.0" vertical-offset="81" max-vertical-offset="782">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/execution/web/app/application.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="299" column="27" selection-start="8882" selection-end="8882" vertical-scroll-proportion="0.0" vertical-offset="5083" max-vertical-offset="5338">
@@ -832,23 +767,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/execution/web/public/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="34" selection-start="268" selection-end="268" vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="1513">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/execution/web/app/accordion.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="17" column="29" selection-start="419" selection-end="419" vertical-scroll-proportion="0.0" vertical-offset="161" max-vertical-offset="782">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/execution/web/app/application.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="314" column="45" selection-start="9254" selection-end="9254" vertical-scroll-proportion="0.0" vertical-offset="5191" max-vertical-offset="5661">
           <folding />
         </state>
       </provider>
@@ -860,9 +781,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/execution/web/app/js_zip.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="20" selection-start="330" selection-end="337" vertical-scroll-proportion="0.9" vertical-offset="51" max-vertical-offset="850">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/execution/web/public/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="25" selection-start="804" selection-end="804" vertical-scroll-proportion="-9.615385" vertical-offset="124" max-vertical-offset="1564">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="152" column="14" selection-start="2372" selection-end="2372" vertical-scroll-proportion="0.8375796" vertical-offset="2321" max-vertical-offset="4437">
+        <state line="58" column="7" selection-start="880" selection-end="880" vertical-scroll-proportion="-4.923077" vertical-offset="858" max-vertical-offset="4437">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/execution/web/app/application.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="179" column="23" selection-start="4861" selection-end="4861" vertical-scroll-proportion="0.37950137" vertical-offset="2906" max-vertical-offset="5831">
           <folding />
         </state>
       </provider>

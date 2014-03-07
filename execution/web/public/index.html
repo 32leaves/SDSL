@@ -5,6 +5,7 @@
     <script src="/vendor/dat.gui.min.js"></script>
     <script src="/vendor/ace/ace.js"></script>
     <script src="/vendor/jszip.min.js"></script>
+    <script src="/vendor/Filesaver.js"></script>
     <link href="/css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -13,23 +14,25 @@
     <script src="/vendor/dat.gui.min.js"></script>
     <script src="/assets/application.js"></script>
 
+    <a href="#" id="downloadlink"></a>
+
     <div class="toolbar">
         <span class="logo">SDSL</span>
         <span class="run button" id="runButton">RUN</span>
         <span class="inspect button">I</span>
-        <span class="settings button">S</span>
+        <span class="save button">S</span>
     </div>
     <div class="renderContainer" id="canvasContainer">
 
     </div>
     <div class="editorContainer">
         <ul class="accordion" id="editors">
-            <li>
+            <!-- li>
                 <small>ARRANGEMENT</small>
                 <div class="editor" id="arrangementView">
 
                 </div>
-            </li>
+            </li -->
             <li>
                 <small>GEOMETRY</small><input type="checkbox" id="useGeometryShader">
                 <div class="editor" id="geometryShader">void main() {

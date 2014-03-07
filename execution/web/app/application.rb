@@ -178,7 +178,6 @@ class Runtime
     }[type]
 
     code = editor.value
-    `console.log(code)`
     HTTP.post("/compile/#{type}/#{name}", :payload => { :code => code } ) do |response|
       editor.clear_markers
       editor.clear_annotations
@@ -279,6 +278,18 @@ class Runtime
 }
   end
 
+  def save
+    geom, frag, pixel = get_shader_code
+
+    zip = JSZip::ZipFile.new
+    zip.file("geometry.sdsl", geom)
+    zip.file("fragment.sdsl", frag)
+    zip.file("pixel.sdsl", pixel)
+    blob = zip.to_blob
+    filename = "sdslProgram#{Time.now.strftime("%d%m%Y%H%M%S")}.zip"
+    `window.saveAs(blob, filename)`
+  end
+
   def on_resize
     width = Element.find('#canvasContainer').width
     height = `window.innerHeight`
@@ -298,26 +309,25 @@ Document.ready? do
   Element.find('#canvasContainer') << runtime.renderer.dom_element
 
   Element.find('.inspect').on(:click) do
-    geom, frag, pixel = runtime.get_shader_code
+    runtime.inspector.inspect_active_editor
+  end
 
-    zip = JSZip::ZipFile.new
-    zip.file("geometry.sdsl", geom)
-    zip.file("fragment.sdsl", frag)
-    zip.file("pixel.sdsl", pixel)
-    content = zip.to_base64
-
-    `location.href="data:application/zip;base64,"+content`
+  Element.find('.save').on(:click) do
+    runtime.save
   end
 
   Element.find('#runButton').on(:click) do runtime.rebuild; end
   runtime.rebuild
 
-  Element.find("body").on(:keypress) do |evt|
+  Element.find(`window`).on(:keydown) do |evt|
     if `evt.keyCode == 13 && evt.shiftKey`
       evt.prevent_default
       runtime.rebuild
     elsif `evt.keyCode == 9 && evt.ctrlKey`
       runtime.inspector.inspect_active_editor
+    elsif `(event.keyCode == 83 && event.ctrlKey) || (event.which == 19)`
+      runtime.save
+      `evt.preventDefault()`
     end
   end
 
