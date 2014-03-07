@@ -14,11 +14,11 @@ class ShaderInspector
   end
 
   def inspect_active_editor
-    editor_id = Element.find(".active .editor").attr('id')
+    editor_id = Element.find(".active .editor").id
     `if(editor_id == undefined) return;`
 
     table = @element.find("table")
-    table.empty
+    `table.empty()`
     shader = case editor_id
       when 'geometryShader'
         @engine.geometry_shader

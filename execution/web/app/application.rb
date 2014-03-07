@@ -313,10 +313,10 @@ Document.ready? do
   runtime.rebuild
 
   Element.find("body").on(:keypress) do |evt|
-    if evt.key_code == 13 and `evt.native.shiftKey`
+    if `evt.keyCode == 13 && evt.shiftKey`
       evt.prevent_default
       runtime.rebuild
-    elsif evt.key_code == 9 and `evt.native.ctrlKey`
+    elsif `evt.keyCode == 9 && evt.ctrlKey`
       runtime.inspector.inspect_active_editor
     end
   end
