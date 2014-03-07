@@ -15,7 +15,7 @@ class Accordion
         e.css  :height => @title_height
         e.remove_class :active
       end
-      active_element = `$(evt.native.currentTarget)`
+      active_element = `$(evt.currentTarget)`
       active_element.css :height => self.tile_height
       active_element.add_class :active
       @on_open.call(active_element) unless @on_open.nil?
