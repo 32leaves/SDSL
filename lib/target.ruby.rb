@@ -469,10 +469,6 @@ module NLSE
           geometry.map {|geom| fragment_shader.execute(time, geom.first, geom.last) }
         end
 
-        # thanks to the non-existent Math support in opal we need to implement min/max ourselves
-        def min(a, b); (b.nil? or a < b) ? a : b; end
-        def max(a, b); (b.nil? or a > b) ? a : b; end
-
         #
         # Computes the geometry based on the arrangement. Returns an array of frag_count
         # [ position, normal ].
@@ -502,6 +498,11 @@ module NLSE
           resolution = lo.zip(hi).map {|e| e.last - e.first }
           NLSE::Target::Ruby::Runtime::Vec3.new(resolution[0], resolution[1], resolution[2])
         end
+
+        private
+        # thanks to the non-existent Math support in opal we need to implement min/max ourselves
+        def min(a, b); (b.nil? or a < b) ? a : b; end
+        def max(a, b); (b.nil? or a > b) ? a : b; end
 
       end
 
