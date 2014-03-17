@@ -46,11 +46,11 @@ class Runtime
       editor.resize true unless editor.nil?
     end
     Element.find("#useGeometryShader").on(:click) do |evt|
-      @engine.use_geometry_shader = `evt.native.currentTarget.selected`
+      @engine.use_geometry_shader = `evt.currentTarget.checked`
       rebuild
     end
     Element.find("#usePixelShader").on(:click) do |evt|
-      @engine.use_pixel_shader = `evt.native.currentTarget.selected`
+      @engine.use_pixel_shader = `evt.currentTarget.checked`
       rebuild
     end
 
