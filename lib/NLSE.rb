@@ -109,6 +109,9 @@ module NLSE
   class VectorDivScalar < VectorOp
   end
 
+  class VectorDivVector < VectorOp
+  end
+
   class VectorModScalar < VectorOp
   end
 

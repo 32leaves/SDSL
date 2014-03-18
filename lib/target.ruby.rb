@@ -29,7 +29,11 @@ module NLSE
           end
 
           def /(other)
-            Vec2.new(x / other, y / other)
+            if other.is_a? Vec2
+              Vec2.new(x / other.x, y / other.y)
+            else
+              Vec2.new(x / other, y / other)
+            end
           end
 
           def %(other)
@@ -39,6 +43,14 @@ module NLSE
           def +(other)
             if other.is_a? Vec2
               Vec2.new(x + other.x, y + other.y)
+            end
+          end
+
+          def -(other)
+            if other.is_a? Vec2
+              Vec2.new(x - other.x, y - other.y)
+            else
+              Vec2.new(x - other, y - other)
             end
           end
 
@@ -78,11 +90,23 @@ module NLSE
           end
 
           def /(other)
-            Vec3.new(x / other, y / other, z / other)
+            if other.is_a? Vec3
+              Vec3.new(x / other.x, y / other.y, z / other.z)
+            else
+              Vec3.new(x / other, y / other, z / other)
+            end
           end
 
           def %(other)
             Vec3.new(x % other, y % other, z % other)
+          end
+
+          def -(other)
+            if other.is_a? Vec3
+              Vec3.new(x - other.x, y - other.y, z - other.z)
+            else
+              Vec3.new(x - other, y - other, z - other)
+            end
           end
 
           def +(other)
@@ -148,8 +172,20 @@ module NLSE
             end
           end
 
+          def -(other)
+            if other.is_a? Vec4
+              Vec4.new(x - other.x, y - other.y, z - other.z, w - other.w)
+            else
+              Vec4.new(x - other, y - other, z - other, w - other)
+            end
+          end
+
           def /(other)
-            Vec4.new(x / other, y / other, z / other, w / other)
+            if other.is_a? Vec4
+              Vec4.new(x / other.x, y / other.y, z / other.z, w / other.w)
+            else
+              Vec4.new(x / other, y / other, z / other, w / other)
+            end
           end
 
           def %(other)
@@ -242,6 +278,25 @@ module NLSE
             x.class.new(*comps)
           else
             x < min ? min : (x > max ? max : x)
+          end
+        end
+        def _extr(a, b, &comp)
+          if [ Vec2, Vec3, Vec4 ].any?{|t| a.is_a? t }
+            b = (b.respond_to? :to_a) ? b.to_a : a.to_a.map { b }
+            result = a.to_a.zip(b).map {|x, y| _extr(x, y, &comp) }
+            a.class.new *result
+          else
+            yield a, b
+          end
+        end
+        def min(a, b); _extr(a, b) {|x, y| x < y ? x : y }; end
+        def max(a, b); _extr(a, b) {|x, y| x > y ? x : y }; end
+        def abs(a)
+          if [ Vec2, Vec3, Vec4 ].any?{|t| a.is_a? t }
+            result = a.to_a.map {|x| abs(x) }
+            a.class.new *result
+          else
+            a * (a < 0 ? -1 : 1)
           end
         end
       end
@@ -706,6 +761,10 @@ module NLSE
         end
 
         def transform_vectordivscalar(root)
+          "(#{transform root.a} / #{transform root.b})"
+        end
+
+        def transform_vectordivvector(root)
           "(#{transform root.a} / #{transform root.b})"
         end
 
