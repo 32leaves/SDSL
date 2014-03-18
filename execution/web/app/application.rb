@@ -1,6 +1,7 @@
 require 'opal'
 require 'opal-jquery'
 require 'native'
+require 'math'
 require 'accordion'
 require 'shader_inspector'
 require 'THREE'
@@ -75,8 +76,8 @@ class Runtime
 
     @engine = NLSE::Target::Ruby::Engine.new
     @engine.profile = NLSE::Target::Ruby::DeviceProfile.new
-    normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 1, 0)
-    @engine.arrangement = (0...10).map {|x| (0...10).map {|y| NLSE::Target::Ruby::Runtime::Vec3.new(x, 0, y) } }.flatten
+    normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 0, 1)
+    @engine.arrangement = (0...10).map {|x| (0...10).map {|y| NLSE::Target::Ruby::Runtime::Vec3.new(x, y, 0) } }.flatten
       .map {|e| [e * 20, normal] }
 
 

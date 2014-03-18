@@ -54,8 +54,8 @@ module THREE
 
     def set_position(args)
       x = args[:x]
-      y = args[:y]
-      z = args[:z]
+      y = args[:z]
+      z = args[:y]
       `self.camera.position.x = x` unless x.nil?
       `self.camera.position.y = y` unless y.nil?
       `self.camera.position.z = z` unless z.nil?
@@ -100,8 +100,8 @@ module THREE
       @position = pos
 
       `self.mesh.position.x = pos.x`
-      `self.mesh.position.y = pos.y`
-      `self.mesh.position.z = pos.z`
+      `self.mesh.position.y = pos.z`
+      `self.mesh.position.z = pos.y`
       `self.mesh.updateMatrix()`
     end
 
@@ -136,8 +136,8 @@ module THREE
       @position = pos
 
       `self.mesh.position.x = pos.x`
-      `self.mesh.position.y = pos.y`
-      `self.mesh.position.z = pos.z`
+      `self.mesh.position.y = pos.z`
+      `self.mesh.position.z = pos.y`
       `self.mesh.updateMatrix()`
     end
 

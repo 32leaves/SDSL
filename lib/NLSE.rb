@@ -103,6 +103,10 @@ module NLSE
     def self.strict_types?; true; end
   end
 
+  class VectorSubScalar < VectorOp
+    def self.strict_types?; true; end
+  end
+
   class VectorMulScalar < VectorOp
   end
 

@@ -22,7 +22,7 @@ module NLSE
 
           def *(other)
             if other.is_a?(Vec2)
-              Math::sqrt((x * other.x) + (y * other.y))
+              Math.sqrt((x * other.x) + (y * other.y))
             else
               Vec2.new(x * other, y * other)
             end
@@ -57,6 +57,10 @@ module NLSE
           def to_a
             [ x, y ]
           end
+
+          def to_html
+            to_a.map {|e| "<span class=\"comp\">#{e}</span>" }.join
+          end
         end
         class Vec3
           attr_accessor :x, :y, :z
@@ -83,7 +87,7 @@ module NLSE
 
           def *(other)
             if other.is_a?(Vec3)
-              sqrt((x * other.x) + (y * other.y) + (z * other.z))
+              Math.sqrt((x * other.x) + (y * other.y) + (z * other.z))
             else
               Vec3.new(x * other, y * other, z * other)
             end
@@ -227,7 +231,7 @@ module NLSE
           def *(other)
             if other.is_a? vector_type
               trans = transpose
-              values = (0...@size).map {|e| self[e] * other }
+              values = (0...@size).map {|e| trans[e] * other }
               vector_type.send(:new, *values)
             elsif other.is_a? Numeric
               @m = @m.map {|e| e * other }
@@ -268,7 +272,7 @@ module NLSE
         def sqrt(x); Math.sqrt(x); end
         def ceil(x); x.ceil; end
         def floor(x); x.floor; end
-        def length(x); x.to_a.inject(0.0) {|m,e| m+e} / x.to_a.length; end
+        def length(x); sqrt(x.to_a.map {|a| a * a }.inject(0.0) {|m,e| m+e}); end
         def normalize(vec); vec / length(vec); end
         def clamp(x, min, max)
           if [ Vec2, Vec3, Vec4 ].any?{|t| x.is_a? t}
@@ -760,6 +764,10 @@ module NLSE
           "(#{transform root.a} - #{transform root.b})"
         end
 
+        def transform_vectorsubscalar(root)
+          "(#{transform root.a} - #{transform root.b})"
+        end
+
         def transform_vectordivscalar(root)
           "(#{transform root.a} / #{transform root.b})"
         end
@@ -773,6 +781,10 @@ module NLSE
         end
 
         def transform_vectormulvector(root)
+          "(#{transform root.a} * #{transform root.b})"
+        end
+
+        def transform_matmulvector(root)
           "(#{transform root.a} * #{transform root.b})"
         end
 
