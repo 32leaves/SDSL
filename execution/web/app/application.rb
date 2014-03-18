@@ -324,7 +324,7 @@ Document.ready? do
     if `evt.keyCode == 13 && evt.shiftKey`
       evt.prevent_default
       runtime.rebuild
-    elsif `evt.keyCode == 9 && evt.ctrlKey`
+    elsif `evt.keyCode == 73 && evt.ctrlKey`
       runtime.inspector.inspect_active_editor
     elsif `(event.keyCode == 83 && event.ctrlKey) || (event.which == 19)`
       runtime.save

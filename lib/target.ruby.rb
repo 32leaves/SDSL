@@ -22,7 +22,7 @@ module NLSE
 
           def *(other)
             if other.is_a?(Vec2)
-              Math.sqrt((x * other.x) + (y * other.y))
+              (x * other.x) + (y * other.y)
             else
               Vec2.new(x * other, y * other)
             end
@@ -87,7 +87,7 @@ module NLSE
 
           def *(other)
             if other.is_a?(Vec3)
-              Math.sqrt((x * other.x) + (y * other.y) + (z * other.z))
+              (x * other.x) + (y * other.y) + (z * other.z)
             else
               Vec3.new(x * other, y * other, z * other)
             end
@@ -164,7 +164,7 @@ module NLSE
 
           def *(other)
             if other.is_a?(Vec4)
-              sqrt((x * other.x) + (y * other.y) + (z * other.z) + (w * other.w))
+              (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w)
             else
               Vec4.new(x * other, y * other, z * other, w * other)
             end
@@ -266,6 +266,8 @@ module NLSE
         def mat2(*args); Mat.new(2, args); end
         def mat3(*args); Mat.new(3, args); end
         def mat4(*args); Mat.new(4, args); end
+        def int(x); x.to_i; end
+        def float(x); x.to_f; end
         def sin(x); Math.sin(x); end
         def cos(x); Math.cos(x); end
         def tan(x); Math.tan(x); end
@@ -640,7 +642,7 @@ module NLSE
 
         def transform_function(root)
           """
-          def #{root.name}(#{root.arguments.values.join(", ")})
+          def #{root.name}(#{root.arguments.keys.join(", ")})
             #{transform root.body, "\n            "}
           end
           """

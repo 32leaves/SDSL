@@ -187,7 +187,8 @@ module NLSL
     end
 
     def else_body
-      elements.select {|a| a.is_a? Ifelse0 }.first.funcbody.ast_children
+      r = elements.select {|a| a.is_a? Ifelse0 }.first
+      r.nil? ? nil : r.funcbody.ast_children
     end
 
   end
@@ -199,7 +200,7 @@ module NLSL
     end
 
     def body
-      funcbody.ast_children.first
+      funcbody.ast_children
     end
 
   end
@@ -219,7 +220,7 @@ module NLSL
     end
 
     def body
-      funcbody.ast_children.first
+      funcbody.ast_children
     end
 
   end

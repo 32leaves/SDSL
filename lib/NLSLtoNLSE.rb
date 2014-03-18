@@ -54,7 +54,7 @@ module NLSL
     }
 
     def self._mkbfunc(name, types, rettype)
-      arguments = types.each_with_index.inject({}) {|m, v| m[v.last] = NLSE::Value.new(:type => v.first, :value => nil, :ref => false); m }
+      arguments = types.each_with_index.inject({}) {|m, v| m[v.last] = v.first; m }
       NLSE::Function.new(:name => name, :arguments => arguments, :type => rettype, :body => [], :builtin => true)
     end
     #
@@ -73,6 +73,8 @@ module NLSL
       _mkbfunc("mat3", [ :vec3, :vec3, :vec3 ], :mat3),
       _mkbfunc("mat2", [ :float, :float, :float, :float ], :mat2),
       _mkbfunc("mat2", [ :vec2, :vec2 ], :mat2),
+      _mkbfunc("int",   [ :float ], :int),
+      _mkbfunc("float", [ :int ], :float),
       [ :float, :int ].map {|t| [
         _mkbfunc("cos"  , [ t ], t),
         _mkbfunc("sin"  , [ t ], t),
@@ -440,7 +442,7 @@ module NLSL
         funcs = program.functions[name]
         _error element, "Unknown function: #{name}" if funcs.nil?
         funcs = funcs.inject({}) do |m, func|
-          signature = func.arguments.values.map {|a| a.type.to_s }.join(", ")
+          signature = func.arguments.values.map {|a| a.to_s }.join(", ")
           m[signature] = func
           m
         end
@@ -473,7 +475,7 @@ module NLSL
         _error element, "Conditional must be a comparative expression: #{element.condition}" unless condition.is_a? NLSE::Condition
 
         nuscope = scope.branch
-        body = element.body.content.map {|e| transform(e, nuscope, program) }
+        body = element.body.map {|e| transform(e, nuscope, program) }
         NLSE::While.new(:condition => condition, :body => body)
       end
 
@@ -484,7 +486,7 @@ module NLSL
         condition = transform(element.condition, nuscope, program)
         _error element, "Conditional must be a comparative expression: #{element.condition}" unless condition.is_a? NLSE::Condition
 
-        body = element.body.content.map {|e| transform(e, nuscope, program) }
+        body = element.body.map {|e| transform(e, nuscope, program) }
 
         NLSE::For.new(:init => initialization, :iterator => iterator, :condition => condition, :body => body)
       end
