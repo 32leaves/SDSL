@@ -445,6 +445,19 @@ module NLSE
           positions.flatten.map {|pos| [pos, normal] }
         end
 
+        def self.uniform_circle(radius, spacing)
+          count = 2 * radius
+          positions = (0...count).map do |x|
+            (0...count).map do |y|
+              rx = (x - radius).to_f
+              ry = (y - radius).to_f
+              NLSE::Target::Ruby::Runtime::Vec3.new(x * spacing, y * spacing, 0) if (rx**2 + ry**2) < radius**2
+            end
+          end
+          normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 0, 1)
+          positions.flatten.compact.map {|pos| [pos, normal] }
+        end
+
         def self.circle(radius, strings, spacing)
           degPerRot = (2 * Math::PI) / strings
           positions = (0...strings).map do |phase|
@@ -456,16 +469,6 @@ module NLSE
           normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 0, 1)
 
           positions.flatten.map {|pos| [pos, normal] }
-        end
-
-        def self.uniform_circle(radius, spacing)
-          positions = (0...(2 * radius)).map do |x|
-            (0...(2 * radius)).map do |y|
-              NLSE::Target::Ruby::Runtime::Vec3.new(x * spacing, y * spacing, 0) if ((x - radius)**2 + (y - radius)**2) < radius**2
-            end
-          end
-          normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 0, 1)
-          positions.flatten.compact.map {|pos| [pos, normal] }
         end
 
       end
@@ -721,7 +724,7 @@ module NLSE
         end
 
         def transform_if(root)
-          elze = root.else_body.nil? ? "" : "else\n#{transform root.else_body, "\n"}"
+          elze = root.else_body.nil? ? "" : "\nelse\n#{transform root.else_body, "\n"}"
 
           "if (#{transform root.condition})\n#{transform root.then_body, "\n"}#{elze}\nend"
         end
