@@ -430,6 +430,46 @@ module NLSE
         
       end
 
+      # Generates fixed arrangements. This is particularly useful for debugging
+      class FixedArrangementGenerator
+
+        # Generates a fixed lattice along XY with the Z axis as normal
+        def self.uniform_rect(x_count, y_count = x_count, x_spacing = 1, y_spacing = x_spacing)
+          positions = (0...x_count).map do |x|
+            (0...y_count).map do |y|
+              NLSE::Target::Ruby::Runtime::Vec3.new(x * x_spacing, y * y_spacing, 0)
+            end
+          end
+          normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 0, 1)
+
+          positions.flatten.map {|pos| [pos, normal] }
+        end
+
+        def self.circle(radius, strings, spacing)
+          degPerRot = (2 * Math::PI) / strings
+          positions = (0...strings).map do |phase|
+            (0...radius).map do |amplitude|
+              NLSE::Target::Ruby::Runtime::Vec3.new(spacing * amplitude * Math::sin(phase * degPerRot),
+                                                    spacing * amplitude * Math::cos(phase * degPerRot), 0)
+            end
+          end
+          normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 0, 1)
+
+          positions.flatten.map {|pos| [pos, normal] }
+        end
+
+        def self.uniform_circle(radius, spacing)
+          positions = (0...(2 * radius)).map do |x|
+            (0...(2 * radius)).map do |y|
+              NLSE::Target::Ruby::Runtime::Vec3.new(x * spacing, y * spacing, 0) if ((x - radius)**2 + (y - radius)**2) < radius**2
+            end
+          end
+          normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 0, 1)
+          positions.flatten.compact.map {|pos| [pos, normal] }
+        end
+
+      end
+
       #
       # The device profile specifying hardware details such as the pixel resolution
       # per fragment or the maximum speed with which the display can change shape.

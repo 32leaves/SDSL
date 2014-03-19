@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5968effc-3853-4def-b38e-6e061c9905c8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/app/THREE.rb" afterPath="$PROJECT_DIR$/execution/web/app/THREE.rb" />
+      <change type="DELETED" beforePath="C:\Users\blacki\Documents\GitHub\SDSL\execution\native\lib\fixed_arrangement_generator.rb" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/app/application.rb" afterPath="$PROJECT_DIR$/execution/web/app/application.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/app/sampler_websocket_adapter.rb" afterPath="$PROJECT_DIR$/execution/web/app/sampler_websocket_adapter.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/public/index.html" afterPath="$PROJECT_DIR$/execution/web/public/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/native/play.rb" afterPath="$PROJECT_DIR$/execution/native/play.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/public/stylesheets/style.css" afterPath="$PROJECT_DIR$/execution/web/public/stylesheets/style.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss" afterPath="$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/target.ruby.rb" afterPath="$PROJECT_DIR$/lib/target.ruby.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="SDSL.iws" />
@@ -31,19 +35,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Gemfile" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Gemfile">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="238">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="target.ruby.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/target.ruby.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="644" column="48" selection-start="18834" selection-end="18834" vertical-scroll-proportion="0.0" vertical-offset="10803" max-vertical-offset="13651">
+            <state line="463" column="122" selection-start="13232" selection-end="13232" vertical-scroll-proportion="-7.16" vertical-offset="7692" max-vertical-offset="14331">
               <folding />
             </state>
           </provider>
@@ -52,16 +47,7 @@
       <file leaf-file-name="zip_loader.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/execution/native/lib/zip_loader.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="39" selection-start="864" selection-end="864" vertical-scroll-proportion="0.0" vertical-offset="319" max-vertical-offset="1020">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="fixed_arrangement_generator.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/execution/native/lib/fixed_arrangement_generator.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="83" selection-start="319" selection-end="319" vertical-scroll-proportion="0.0" vertical-offset="68" max-vertical-offset="476">
+            <state line="29" column="39" selection-start="864" selection-end="864" vertical-scroll-proportion="-6.96" vertical-offset="319" max-vertical-offset="1020">
               <folding />
             </state>
           </provider>
@@ -70,16 +56,34 @@
       <file leaf-file-name="play.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/execution/native/play.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="46" selection-start="75" selection-end="75" vertical-scroll-proportion="0.0" vertical-offset="34" max-vertical-offset="255">
+            <state line="8" column="59" selection-start="345" selection-end="345" vertical-scroll-proportion="-5.44" vertical-offset="0" max-vertical-offset="255">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sampler_websocket_adapter.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="sampler_websocket_adapter.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/execution/web/app/sampler_websocket_adapter.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="76" selection-start="1137" selection-end="1137" vertical-scroll-proportion="1.1567291" vertical-offset="103" max-vertical-offset="1020">
+            <state line="38" column="5" selection-start="954" selection-end="954" vertical-scroll-proportion="-11.56" vertical-offset="357" max-vertical-offset="1020">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="arrangement_websocket_adapter.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/execution/web/app/arrangement_websocket_adapter.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="1" column="17" selection-start="39" selection-end="39" vertical-scroll-proportion="-0.68" vertical-offset="0" max-vertical-offset="782">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="style.scss" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="217" column="17" selection-start="3284" selection-end="3284" vertical-scroll-proportion="-8.807693" vertical-offset="3460" max-vertical-offset="4777">
               <folding />
             </state>
           </provider>
@@ -97,25 +101,25 @@
       <file leaf-file-name="play.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/play.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="901">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="901">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="THREE.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/execution/web/app/THREE.rb">
+      <file leaf-file-name="application.rb" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/execution/web/app/application.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="109" column="43" selection-start="2286" selection-end="2286" vertical-scroll-proportion="0.0" vertical-offset="1215" max-vertical-offset="2669">
+            <state line="64" column="7" selection-start="1723" selection-end="1723" vertical-scroll-proportion="0.49348232" vertical-offset="823" max-vertical-offset="6477">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="app.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/execution/web/app.rb">
+      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/execution/web/public/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="41" column="9" selection-start="982" selection-end="982" vertical-scroll-proportion="0.0" vertical-offset="228" max-vertical-offset="1122">
+            <state line="39" column="78" selection-start="1543" selection-end="1543" vertical-scroll-proportion="-6.1923075" vertical-offset="502" max-vertical-offset="2074">
               <folding />
             </state>
           </provider>
@@ -143,22 +147,23 @@
         <option value="$PROJECT_DIR$/execution/web/app/accordion.rb" />
         <option value="$PROJECT_DIR$/execution/web/app/shader_inspector.rb" />
         <option value="$PROJECT_DIR$/execution/web/app/js_zip.rb" />
-        <option value="$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss" />
         <option value="$PROJECT_DIR$/execution/native/Gemfile" />
         <option value="$PROJECT_DIR$/execution/native/lib/sdsr.rb" />
-        <option value="$PROJECT_DIR$/execution/native/lib/fixed_arrangement_generator.rb" />
         <option value="$PROJECT_DIR$/execution/native/lib/zip_loader.rb" />
-        <option value="$PROJECT_DIR$/execution/native/play.rb" />
-        <option value="$PROJECT_DIR$/execution/web/public/index.html" />
         <option value="$PROJECT_DIR$/lib/NLSE.rb" />
         <option value="$PROJECT_DIR$/lib/NLSLtoNLSE.rb" />
         <option value="$PROJECT_DIR$/lib/NLSL.rb" />
-        <option value="$PROJECT_DIR$/lib/target.ruby.rb" />
         <option value="$PROJECT_DIR$/execution/web/debug.rb" />
         <option value="$PROJECT_DIR$/execution/web/app.rb" />
         <option value="$PROJECT_DIR$/execution/web/app/THREE.rb" />
-        <option value="$PROJECT_DIR$/execution/web/app/application.rb" />
         <option value="$PROJECT_DIR$/execution/web/app/sampler_websocket_adapter.rb" />
+        <option value="$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss" />
+        <option value="$PROJECT_DIR$/execution/native/lib/fixed_arrangement_generator.rb" />
+        <option value="$PROJECT_DIR$/execution/native/play.rb" />
+        <option value="$PROJECT_DIR$/execution/web/public/index.html" />
+        <option value="$PROJECT_DIR$/execution/web/app/arrangement_websocket_adapter.rb" />
+        <option value="$PROJECT_DIR$/lib/target.ruby.rb" />
+        <option value="$PROJECT_DIR$/execution/web/app/application.rb" />
       </list>
     </option>
   </component>
@@ -342,7 +347,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="recentsLimit" value="5" />
-    <property name="SearchEverywhereHistory" value="app&#10;appl&#10;appli&#10;three&#10;index&#10;target&#10;js&#10;index.h" />
+    <property name="SearchEverywhereHistory" value="inde&#10;index&#10;st&#10;app&#10;appl&#10;appli&#10;three&#10;target&#10;js&#10;index.h" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="options.lastSelected" value="org.jetbrains.plugins.ruby.settings.RubyActiveModuleSdkConfigurable" />
     <property name="options.splitter.main.proportions" value="0.3" />
@@ -479,6 +484,23 @@
     </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="false" SSL_PROTOCOLS="all">
+    <option name="USER" value="" />
+    <option name="PASSWORD" value="" />
+    <option name="mySSHConnectionTimeout" value="30000" />
+    <option name="mySSHReadTimeout" value="30000" />
+    <option name="LAST_MERGED_REVISION" />
+    <option name="MERGE_DRY_RUN" value="false" />
+    <option name="MERGE_DIFF_USE_ANCESTRY" value="true" />
+    <option name="UPDATE_LOCK_ON_DEMAND" value="false" />
+    <option name="IGNORE_SPACES_IN_MERGE" value="false" />
+    <option name="CHECK_NESTED_FOR_QUICK_MERGE" value="false" />
+    <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
+    <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
+    <option name="FORCE_UPDATE" value="false" />
+    <option name="IGNORE_EXTERNALS" value="false" />
+    <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="5968effc-3853-4def-b38e-6e061c9905c8" name="Default" comment="" />
@@ -509,13 +531,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30652174" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30652174" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288364" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24969475" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23748474" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -571,7 +593,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/execution/web/app/application.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="205" column="42" selection-start="6015" selection-end="6017" vertical-scroll-proportion="0.0" vertical-offset="3260" max-vertical-offset="4998" />
+        <state line="205" column="42" selection-start="6015" selection-end="6017" vertical-scroll-proportion="0.0" vertical-offset="3260" max-vertical-offset="4998">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/execution/web/app/sampler_websocket_adapter.rb">
@@ -601,7 +625,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/NLSE.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="15" selection-start="1154" selection-end="1154" vertical-scroll-proportion="0.0" vertical-offset="698" max-vertical-offset="5015" />
+        <state line="51" column="15" selection-start="1154" selection-end="1154" vertical-scroll-proportion="0.0" vertical-offset="698" max-vertical-offset="5015">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/NLSL.rb">
@@ -616,7 +642,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/execution/web/app/application.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="256" column="29" selection-start="7604" selection-end="7604" vertical-scroll-proportion="0.0" vertical-offset="4047" max-vertical-offset="4964" />
+        <state line="256" column="29" selection-start="7604" selection-end="7604" vertical-scroll-proportion="0.0" vertical-offset="4047" max-vertical-offset="4964">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/execution/web/app/accordion.rb">
@@ -648,7 +676,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/NLSE.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="15" selection-start="1154" selection-end="1154" vertical-scroll-proportion="0.0" vertical-offset="698" max-vertical-offset="5015" />
+        <state line="51" column="15" selection-start="1154" selection-end="1154" vertical-scroll-proportion="0.0" vertical-offset="698" max-vertical-offset="5015">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/NLSL.rb">
@@ -663,7 +693,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/execution/web/app/application.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="192" column="12" selection-start="5544" selection-end="5544" vertical-scroll-proportion="0.0" vertical-offset="3084" max-vertical-offset="4930" />
+        <state line="192" column="12" selection-start="5544" selection-end="5544" vertical-scroll-proportion="0.0" vertical-offset="3084" max-vertical-offset="4930">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/execution/web/app/accordion.rb">
@@ -740,18 +772,6 @@
         <state line="2" column="0" selection-start="0" selection-end="430" vertical-scroll-proportion="0.09418283" vertical-offset="0" max-vertical-offset="527" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="7" selection-start="880" selection-end="880" vertical-scroll-proportion="-4.923077" vertical-offset="858" max-vertical-offset="4437" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/play.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="901">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/execution/native/lib/sdsr.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="8" column="0" selection-start="282" selection-end="282" vertical-scroll-proportion="0.0" vertical-offset="136" max-vertical-offset="238">
@@ -759,45 +779,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/execution/native/lib/fixed_arrangement_generator.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="83" selection-start="319" selection-end="319" vertical-scroll-proportion="0.0" vertical-offset="68" max-vertical-offset="476">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/execution/native/lib/zip_loader.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="39" selection-start="864" selection-end="864" vertical-scroll-proportion="0.0" vertical-offset="319" max-vertical-offset="1020">
+        <state line="29" column="39" selection-start="864" selection-end="864" vertical-scroll-proportion="-6.96" vertical-offset="319" max-vertical-offset="1020">
           <folding />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/execution/native/play.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="46" selection-start="75" selection-end="75" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/execution/web/public/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="15" selection-start="364" selection-end="364" vertical-scroll-proportion="0.3501144" vertical-offset="0" max-vertical-offset="1581" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/NLSE.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="105" column="23" selection-start="2466" selection-end="2466" vertical-scroll-proportion="-5.96" vertical-offset="1338" max-vertical-offset="5134" />
+        <state line="105" column="23" selection-start="2466" selection-end="2466" vertical-scroll-proportion="-5.96" vertical-offset="1338" max-vertical-offset="5134">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/NLSL.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="190" column="22" selection-start="2822" selection-end="2822" vertical-scroll-proportion="0.5349233" vertical-offset="2916" max-vertical-offset="4896" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/target.ruby.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="644" column="48" selection-start="18834" selection-end="18834" vertical-scroll-proportion="0.0" vertical-offset="10803" max-vertical-offset="13651">
+        <state line="190" column="22" selection-start="2822" selection-end="2822" vertical-scroll-proportion="0.5349233" vertical-offset="2916" max-vertical-offset="4896">
           <folding />
         </state>
       </provider>
@@ -818,17 +816,63 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/NLSLtoNLSE.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="198" column="5" selection-start="7957" selection-end="7957" vertical-scroll-proportion="0.6149915" vertical-offset="3005" max-vertical-offset="8687" />
+        <state line="198" column="5" selection-start="7957" selection-end="7957" vertical-scroll-proportion="0.6149915" vertical-offset="3005" max-vertical-offset="8687">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/execution/web/app/application.rb">
+    <entry file="file://$PROJECT_DIR$/play.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="79" column="51" selection-start="2296" selection-end="2296" vertical-scroll-proportion="0.33333334" vertical-offset="1164" max-vertical-offset="5848" />
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="901">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/execution/web/public/stylesheets/sass/style.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="217" column="17" selection-start="3284" selection-end="3284" vertical-scroll-proportion="-8.807693" vertical-offset="3460" max-vertical-offset="4777">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/execution/native/play.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="59" selection-start="345" selection-end="345" vertical-scroll-proportion="-5.44" vertical-offset="0" max-vertical-offset="255">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/execution/web/public/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="39" column="78" selection-start="1543" selection-end="1543" vertical-scroll-proportion="-6.1923075" vertical-offset="502" max-vertical-offset="2074">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/execution/web/app/sampler_websocket_adapter.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="76" selection-start="1137" selection-end="1137" vertical-scroll-proportion="1.1567291" vertical-offset="103" max-vertical-offset="1020">
+        <state line="38" column="5" selection-start="954" selection-end="954" vertical-scroll-proportion="-11.56" vertical-offset="357" max-vertical-offset="1020">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/execution/web/app/arrangement_websocket_adapter.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1" column="17" selection-start="39" selection-end="39" vertical-scroll-proportion="-0.68" vertical-offset="0" max-vertical-offset="782">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/target.ruby.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="463" column="122" selection-start="13232" selection-end="13232" vertical-scroll-proportion="-7.16" vertical-offset="7692" max-vertical-offset="14331">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/execution/web/app/application.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="64" column="7" selection-start="1723" selection-end="1723" vertical-scroll-proportion="0.49348232" vertical-offset="823" max-vertical-offset="6477">
           <folding />
         </state>
       </provider>

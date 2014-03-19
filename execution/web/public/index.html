@@ -31,7 +31,36 @@
             <li>
                 <small>ARRANGEMENT</small>
                 <div class="editor" id="arrangementView">
-
+                    <dl>
+                        <dt>Template</dt>
+                        <dd><select id="arrangementType">
+                            <optgroup label="Fixed">
+                                <option value="fxRect" selected="selected">Rectangle</option>
+                                <option value="fxCircle">Circle</option>
+                                <!-- option value="fxSphere">Sphere</option -->
+                            </optgroup>
+                            <optgroup label="Dynamic">
+                                <option value="dnSocket">Websocket</option>
+                            </optgroup>
+                        </select> </dd>
+                    </dl>
+                    <dl id="fxRectOptions" class="arrangementOptions">
+                        <dt>Width</dt><dd><input type="number" id="fxRectWidth" min="1" max="32" value="16" /></dd>
+                        <dt>Height</dt><dd><input type="number" id="fxRectHeight" min="1" max="32" value="16" /></dd>
+                        <dt>Spacing</dt><dd><input type="number" id="fxRectSpacing" min="0" max="100" value="20" /></dd>
+                    </dl>
+                    <dl id="fxCircleOptions" class="arrangementOptions hidden">
+                        <dt>Radius</dt><dd><input type="number" id="fxCircleRadius" min="1" max="16" value="8" /></dd>
+                        <dt>Spacing</dt><dd><input type="number" id="fxCircleSpacing" min="0" max="100" value="20" /></dd>
+                    </dl>
+                    <!-- dl id="fxSphereOptions" class="arrangementOptions hidden">
+                        <dt>Radius</dt><dd><input type="number" id="fxSphereRadius" min="1" max="16" value="8" /></dd>
+                        <dt>Spacing</dt><dd><input type="number" id="fxSphereSpacing" min="0" max="100" value="20" /></dd>
+                    </dl -->
+                    <dl id="dnSocketOptions" class="arrangementOptions hidden">
+                        <dt>URL</dt><dd><input type="url" id="dnSocketURL" /></dd>
+                    </dl>
+                    <input type="button" id="arrangementApply" value="Apply" />
                 </div>
             </li>
             <li>

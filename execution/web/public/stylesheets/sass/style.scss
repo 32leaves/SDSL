@@ -211,6 +211,26 @@ body {
   }
 }
 
+#arrangementView {
+  padding-left: 1em;
+
+  .hidden {
+    display: none;
+  }
+
+  dl {
+    dt {
+      display: inline-block;
+      width: 25%;
+      float: left;
+    }
+
+    input, select {
+      width: 70%;
+    }
+  }
+}
+
 .error {
   position: absolute;
   background-color: rgba(255, 10, 22, 0.2);

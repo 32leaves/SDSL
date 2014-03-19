@@ -6,5 +6,5 @@ filename = ARGV.first || "C:/Users/Christian/Downloads/sdslProgram07032014143309
 loader = SDSR::ZipLoader.new(filename)
 engine = loader.build_engine
 engine.profile = NLSE::Target::Ruby::DeviceProfile.new
-engine.arrangement = SDSR::FixedArrangementGenerator.uniform_rect(10)
+engine.arrangement = NLSE::Target::Ruby::FixedArrangementGenerator.uniform_rect(10)
 engine.execute
