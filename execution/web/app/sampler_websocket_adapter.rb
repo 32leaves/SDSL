@@ -43,6 +43,10 @@ class SamplerWebsocketAdapter
     `self.data[self.dimension_count * idx + dim]`
   end
 
+  def to_html
+    "Sampler#{@dimension_count}: #{`self.data.length / self.dimension_count`}"
+  end
+
   private
   def on_message(evt)
     @data = `new Uint8Array(evt.data)`
