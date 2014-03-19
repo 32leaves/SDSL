@@ -20,6 +20,10 @@ module ACE
       `self.editor.getSession().getValue()`
     end
 
+    def value=(value)
+      `self.editor.getSession().setValue(value)`
+    end
+
     def clear_markers
       %x{
         var markers = self.editor.session.getMarkers(true);

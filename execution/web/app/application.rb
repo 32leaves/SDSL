@@ -8,7 +8,9 @@ require 'THREE'
 require 'DatGUI'
 require 'ACE'
 require 'sampler_websocket_adapter'
+require 'arrangement_websocket_adapter'
 require 'js_zip'
+require 'js_unzip'
 require 'target.ruby'
 
 #
@@ -54,6 +56,16 @@ class Runtime
       @engine.use_pixel_shader = `evt.currentTarget.checked`
       rebuild
     end
+    Element.find("#arrangementType").on(:change) do |evt|
+      Element.find(".arrangementOptions").hide
+      Element.find("##{evt.target.value}Options").show
+    end
+    Element.find("#arrangementApply").on(:click) do |evt|
+      rebuild_arrangement
+      rebuild_scene
+    end
+
+    setup_dropzone
 
     @geometry_editor = ACE::Editor.new "geometryShader"
     @fragment_editor = ACE::Editor.new "fragmentShader"
@@ -77,9 +89,7 @@ class Runtime
     @engine = NLSE::Target::Ruby::Engine.new
     @engine.profile = NLSE::Target::Ruby::DeviceProfile.new
     normal = NLSE::Target::Ruby::Runtime::Vec3.new(0, 0, 1)
-    @engine.arrangement = (0...10).map {|x| (0...10).map {|y| NLSE::Target::Ruby::Runtime::Vec3.new(x, y, 0) } }.flatten
-      .map {|e| [e * 20, normal] }
-
+    rebuild_arrangement
 
     @inspector = ShaderInspector.new @engine
   end
@@ -250,6 +260,35 @@ class Runtime
     view.open
   end
 
+  def rebuild_arrangement
+    template = Element.find("#arrangementType").value
+    options = Element.find("##{template}Options input").inject({}) {|m,e| m[e.id] = e.value; m }
+
+    templates = {
+      :fxRect => lambda do
+        width   = options["fxRectWidth"].to_i
+        height  = options["fxRectHeight"].to_i
+        spacing = options["fxRectSpacing"].to_i
+        NLSE::Target::Ruby::FixedArrangementGenerator.uniform_rect(width, height, spacing)
+      end,
+      :fxCircle => lambda do
+        radius  = options["fxCircleRadius"].to_i
+        spacing = options["fxCircleSpacing"].to_i
+        NLSE::Target::Ruby::FixedArrangementGenerator.uniform_circle(radius, spacing)
+      end,
+      :dnSocket => lambda do
+        url = options["dnSocketURL"]
+        ArrangementWebsocketAdapter.new url
+      end
+    }
+    new_arrangement = templates[template.to_sym].call(options)
+    if new_arrangement.nil? || new_arrangement.empty?
+      `console.log('Template did not produce a valid arrangement.')`
+    else
+      @engine.arrangement = new_arrangement
+    end
+  end
+
   private
   def setup_scene
     # workaround to keep the correct context
@@ -301,6 +340,69 @@ class Runtime
     [ @geometry_editor, @fragment_editor, @pixel_editor ].each {|editor| editor.resize true }
     Element.find('body').css(:height => height)
     render
+  end
+
+  def setup_dropzone
+    %x{
+$("body").on('dragover', function(e) {
+  e.preventDefault();
+});
+$("body").on('dragenter', function(e) {
+  $("#dropMessage").show();
+});
+$("body").on('dragend', function(e) {
+  $("#dropMessage").hide();
+  e.preventDefault();
+});
+$("body").on('drop', function (e) {
+  $("#dropMessage").hide();
+  e = e || window.event; // get window.event if e argument missing (in IE)
+  if (e.preventDefault) { e.preventDefault(); } // stops the browser from redirecting off to the image.
+
+  var dt    = e.dataTransfer || e.originalEvent.dataTransfer;
+  var files = dt.files;
+  if(files.length < 1) return;
+
+  var reader = new FileReader();
+  reader.onload = function(evt) {
+    self.$load_from_zipfile(evt.target.result);
+  };
+  reader.readAsBinaryString(files[0])
+  return false;
+});
+}
+  end
+
+  def load_from_zipfile(blob)
+    zip_file = JSUnZip::ZipFile.new(blob)
+    return unless zip_file.is_zip?
+
+    entries = zip_file.entries
+    return if entries["fragment.sdsl"].nil?
+
+    @fragment_editor.value = entries["fragment.sdsl"]
+    geometry_code = entries["geometry.sdsl"]
+    geometry_checkbox = Element.find("#useGeometryShader")
+    unless entries["geometry.sdsl"].nil?
+      @geometry_editor.value = geometry_code
+      @engine.use_geometry_shader = true
+      `geometry_checkbox.attr('checked', 'checked')`
+    else
+      @engine.use_geometry_shader = false
+      `geometry_checkbox.attr('checked', undefined)`
+    end
+    pixel_code = entries["pixel.sdsl"]
+    pixel_checkbox = Element.find("#usePixelShader")
+    unless entries["pixel.sdsl"].nil?
+      @pixel_editor.value = pixel_code
+      @engine.use_pixel_shader = true
+      `pixel_checkbox.attr('checked', 'checked')`
+    else
+      @engine.use_pixel_shader = false
+      `pixel_checkbox.attr('checked', undefined)`
+    end
+
+    rebuild
   end
 
 end

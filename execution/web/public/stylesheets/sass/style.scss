@@ -15,6 +15,21 @@ body {
   height: 100%;
 }
 
+#dropMessage {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+  text-align: center;
+  vertical-align: middle;
+  padding-top: 25%;
+  font-size: 200%;
+  font-weight: bold;
+}
+
 .toolbar {
   position: absolute;
   top: 0px;
