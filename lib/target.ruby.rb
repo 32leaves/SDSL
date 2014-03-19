@@ -449,8 +449,8 @@ module NLSE
           count = 2 * radius
           positions = (0...count).map do |x|
             (0...count).map do |y|
-              rx = (x - radius).to_f
-              ry = (y - radius).to_f
+              rx = (x - (radius - 0.5)).to_f
+              ry = (y - (radius - 0.5)).to_f
               NLSE::Target::Ruby::Runtime::Vec3.new(x * spacing, y * spacing, 0) if (rx**2 + ry**2) < radius**2
             end
           end
