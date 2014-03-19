@@ -107,6 +107,7 @@ module THREE
 
     def set_height(height)
       `self.mesh.scale.y = height`
+      `self.mesh.position.y = (height * 10) / 2`
       `self.mesh.updateMatrix()`
     end
 
