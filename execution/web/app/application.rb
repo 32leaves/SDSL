@@ -204,7 +204,7 @@ class Runtime
             :pixel    => NLSE::Target::Ruby::PixelShader
         }[type].new(shader)
         @engine.send("#{type}_shader=".to_s, new_wrapper)
-        shader.bind_uniform(state)
+        shader.bind_uniform(state, true)
         shader.bind_uniform(shader.known_uniforms
                             .select {|k| shader.uniform_type(k).to_s[0...7] == "sampler" }
                             .reject {|k| shader.send(k).is_a? SamplerWebsocketAdapter }

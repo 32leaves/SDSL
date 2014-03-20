@@ -312,12 +312,16 @@ module NLSE
       #
       class Shader
 
-        def bind_uniform(uniforms)
+        def bind_uniform(uniforms, ignore_unknown_uniforms = false)
           uniforms.each do |kv|
             name, value = kv
-            raise "Unknown uniform: #{name}" unless uniform_exists? name
-            instance_variable_set("@#{name}", value)
-            self.class.__send__(:attr_accessor, name) unless respond_to? name
+
+            if uniform_exists?(name)
+              instance_variable_set("@#{name}", value)
+              self.class.__send__(:attr_accessor, name) unless respond_to? name
+            elsif not ignore_unknown_uniforms
+              raise "Unknown uniform: #{name}"
+            end
           end
           self
         end
