@@ -1,0 +1,588 @@
+--- !ruby/object:NLSE::Program
+root_scope: !ruby/object:NLSE::Scope
+  parent: 
+  local:
+    :iGlobalTime: :float
+    :iFragCoord: :vec3
+    :iFragNormal: :vec3
+    :iPixelResolution: :vec2
+    :iPixelCoord: :vec2
+    :sd_PixelColor: :vec4
+    :red: :float
+    :green: :float
+    :blue: :float
+functions:
+  vec4:
+  - !ruby/object:NLSE::Function
+    name: vec4
+    arguments:
+      0: :float
+      1: :float
+      2: :float
+      3: :float
+    type: :vec4
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: vec4
+    arguments:
+      0: :vec2
+      1: :float
+      2: :float
+    type: :vec4
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: vec4
+    arguments:
+      0: :vec3
+      1: :float
+    type: :vec4
+    body: []
+    builtin: true
+  vec3:
+  - !ruby/object:NLSE::Function
+    name: vec3
+    arguments:
+      0: :float
+      1: :float
+      2: :float
+    type: :vec3
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: vec3
+    arguments:
+      0: :vec2
+      1: :float
+    type: :vec3
+    body: []
+    builtin: true
+  vec2:
+  - !ruby/object:NLSE::Function
+    name: vec2
+    arguments:
+      0: :float
+      1: :float
+    type: :vec2
+    body: []
+    builtin: true
+  mat4:
+  - !ruby/object:NLSE::Function
+    name: mat4
+    arguments:
+      0: :float
+      1: :float
+      2: :float
+      3: :float
+      4: :float
+      5: :float
+      6: :float
+      7: :float
+      8: :float
+      9: :float
+      10: :float
+      11: :float
+      12: :float
+      13: :float
+      14: :float
+      15: :float
+    type: :mat4
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: mat4
+    arguments:
+      0: :vec4
+      1: :vec4
+      2: :vec4
+      3: :vec4
+    type: :mat4
+    body: []
+    builtin: true
+  mat3:
+  - !ruby/object:NLSE::Function
+    name: mat3
+    arguments:
+      0: :float
+      1: :float
+      2: :float
+      3: :float
+      4: :float
+      5: :float
+      6: :float
+      7: :float
+      8: :float
+    type: :mat3
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: mat3
+    arguments:
+      0: :vec3
+      1: :vec3
+      2: :vec3
+    type: :mat3
+    body: []
+    builtin: true
+  mat2:
+  - !ruby/object:NLSE::Function
+    name: mat2
+    arguments:
+      0: :float
+      1: :float
+      2: :float
+      3: :float
+    type: :mat2
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: mat2
+    arguments:
+      0: :vec2
+      1: :vec2
+    type: :mat2
+    body: []
+    builtin: true
+  int:
+  - !ruby/object:NLSE::Function
+    name: int
+    arguments:
+      0: :float
+    type: :int
+    body: []
+    builtin: true
+  float:
+  - !ruby/object:NLSE::Function
+    name: float
+    arguments:
+      0: :int
+    type: :float
+    body: []
+    builtin: true
+  cos:
+  - !ruby/object:NLSE::Function
+    name: cos
+    arguments:
+      0: :float
+    type: :float
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: cos
+    arguments:
+      0: :int
+    type: :int
+    body: []
+    builtin: true
+  sin:
+  - !ruby/object:NLSE::Function
+    name: sin
+    arguments:
+      0: :float
+    type: :float
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: sin
+    arguments:
+      0: :int
+    type: :int
+    body: []
+    builtin: true
+  sqrt:
+  - !ruby/object:NLSE::Function
+    name: sqrt
+    arguments:
+      0: :float
+    type: :float
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: sqrt
+    arguments:
+      0: :int
+    type: :int
+    body: []
+    builtin: true
+  abs:
+  - !ruby/object:NLSE::Function
+    name: abs
+    arguments:
+      0: :float
+    type: :float
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: abs
+    arguments:
+      0: :int
+    type: :int
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: abs
+    arguments:
+      0: :vec2
+    type: :vec2
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: abs
+    arguments:
+      0: :vec3
+    type: :vec3
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: abs
+    arguments:
+      0: :vec4
+    type: :vec4
+    body: []
+    builtin: true
+  ceil:
+  - !ruby/object:NLSE::Function
+    name: ceil
+    arguments:
+      0: :float
+    type: :float
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: ceil
+    arguments:
+      0: :int
+    type: :int
+    body: []
+    builtin: true
+  floor:
+  - !ruby/object:NLSE::Function
+    name: floor
+    arguments:
+      0: :float
+    type: :float
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: floor
+    arguments:
+      0: :int
+    type: :int
+    body: []
+    builtin: true
+  min:
+  - !ruby/object:NLSE::Function
+    name: min
+    arguments:
+      0: :float
+      1: :float
+    type: :float
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: min
+    arguments:
+      0: :int
+      1: :int
+    type: :int
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: min
+    arguments:
+      0: :vec2
+      1: :float
+    type: :vec2
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: min
+    arguments:
+      0: :vec2
+      1: :vec2
+    type: :vec2
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: min
+    arguments:
+      0: :vec3
+      1: :float
+    type: :vec3
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: min
+    arguments:
+      0: :vec3
+      1: :vec3
+    type: :vec3
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: min
+    arguments:
+      0: :vec4
+      1: :float
+    type: :vec4
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: min
+    arguments:
+      0: :vec4
+      1: :vec4
+    type: :vec4
+    body: []
+    builtin: true
+  max:
+  - !ruby/object:NLSE::Function
+    name: max
+    arguments:
+      0: :float
+      1: :float
+    type: :float
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: max
+    arguments:
+      0: :int
+      1: :int
+    type: :int
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: max
+    arguments:
+      0: :vec2
+      1: :float
+    type: :vec2
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: max
+    arguments:
+      0: :vec2
+      1: :vec2
+    type: :vec2
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: max
+    arguments:
+      0: :vec3
+      1: :float
+    type: :vec3
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: max
+    arguments:
+      0: :vec3
+      1: :vec3
+    type: :vec3
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: max
+    arguments:
+      0: :vec4
+      1: :float
+    type: :vec4
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: max
+    arguments:
+      0: :vec4
+      1: :vec4
+    type: :vec4
+    body: []
+    builtin: true
+  clamp:
+  - !ruby/object:NLSE::Function
+    name: clamp
+    arguments:
+      0: :float
+      1: :float
+      2: :float
+    type: :float
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: clamp
+    arguments:
+      0: :int
+      1: :int
+      2: :int
+    type: :int
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: clamp
+    arguments:
+      0: :vec2
+      1: :vec2
+      2: :vec2
+    type: :vec2
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: clamp
+    arguments:
+      0: :vec3
+      1: :vec3
+      2: :vec3
+    type: :vec3
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: clamp
+    arguments:
+      0: :vec4
+      1: :vec4
+      2: :vec4
+    type: :vec4
+    body: []
+    builtin: true
+  length:
+  - !ruby/object:NLSE::Function
+    name: length
+    arguments:
+      0: :vec2
+    type: :float
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: length
+    arguments:
+      0: :vec3
+    type: :float
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: length
+    arguments:
+      0: :vec4
+    type: :float
+    body: []
+    builtin: true
+  normalize:
+  - !ruby/object:NLSE::Function
+    name: normalize
+    arguments:
+      0: :vec2
+    type: :vec2
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: normalize
+    arguments:
+      0: :vec3
+    type: :vec3
+    body: []
+    builtin: true
+  - !ruby/object:NLSE::Function
+    name: normalize
+    arguments:
+      0: :vec4
+    type: :vec4
+    body: []
+    builtin: true
+  main:
+  - !ruby/object:NLSE::Function
+    name: main
+    arguments: {}
+    type: :void
+    body:
+    - !ruby/object:NLSE::VariableAssignment
+      name: :color
+      value: !ruby/object:NLSE::VectorMulScalar
+        a: !ruby/object:NLSE::FunctionCall
+          name: vec3
+          arguments:
+          - !ruby/object:NLSE::Value
+            type: :float
+            value: :red
+            ref: true
+          - !ruby/object:NLSE::Value
+            type: :float
+            value: :green
+            ref: true
+          - !ruby/object:NLSE::Value
+            type: :float
+            value: :blue
+            ref: true
+          type: :vec3
+        b: !ruby/object:NLSE::FunctionCall
+          name: clamp
+          arguments:
+          - !ruby/object:NLSE::ScalarSubScalar
+            a: !ruby/object:NLSE::ComponentAccess
+              type: :float
+              value: !ruby/object:NLSE::Value
+                type: :vec3
+                value: :iFragCoord
+                ref: true
+              component: :z
+            b: !ruby/object:NLSE::Value
+              type: :float
+              value: 1.25
+              ref: false
+            signature: '- float float'
+          - !ruby/object:NLSE::Value
+            type: :float
+            value: 0.2
+            ref: false
+          - !ruby/object:NLSE::Value
+            type: :float
+            value: 1.0
+            ref: false
+          type: :float
+        signature: '* vec3 float'
+      initial: true
+    - !ruby/object:NLSE::UniformAssignment
+      name: :sd_PixelColor
+      value: !ruby/object:NLSE::FunctionCall
+        name: vec4
+        arguments:
+        - !ruby/object:NLSE::Value
+          type: :vec3
+          value: :color
+          ref: true
+        - !ruby/object:NLSE::Value
+          type: :float
+          value: 1.0
+          ref: false
+        type: :vec4
+    builtin: false
+uniforms:
+  :iGlobalTime: !ruby/object:NLSE::Uniform
+    name: :iGlobalTime
+    type: :float
+  :iFragCoord: !ruby/object:NLSE::Uniform
+    name: :iFragCoord
+    type: :vec3
+  :iFragNormal: !ruby/object:NLSE::Uniform
+    name: :iFragNormal
+    type: :vec3
+  :iPixelResolution: !ruby/object:NLSE::Uniform
+    name: :iPixelResolution
+    type: :vec2
+  :iPixelCoord: !ruby/object:NLSE::Uniform
+    name: :iPixelCoord
+    type: :vec2
+  :sd_PixelColor: !ruby/object:NLSE::Uniform
+    name: :sd_PixelColor
+    type: :vec4
+  :red: !ruby/object:NLSE::Uniform
+    name: :red
+    type: :float
+  :green: !ruby/object:NLSE::Uniform
+    name: :green
+    type: :float
+  :blue: !ruby/object:NLSE::Uniform
+    name: :blue
+    type: :float

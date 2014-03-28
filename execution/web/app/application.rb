@@ -2,6 +2,7 @@ require 'opal'
 require 'opal-jquery'
 require 'native'
 require 'math'
+require 'json'
 require 'accordion'
 require 'shader_inspector'
 require 'THREE'
@@ -180,6 +181,22 @@ class Runtime
     render
   end
 
+  def update_arrangement
+    # reload fragment resolution
+    @engine.arrangement = @engine.arrangement
+
+    offset = @engine.fragment_resolution * -0.5
+    actor_arrangement = @engine.arrangement.map {|e| p,n=e; [((p / @engine.fragment_resolution) - 0.5) * 20, n] }
+    if actor_arrangement.length == @actors.length
+      actor_arrangement.each_with_index {|frag, idx|
+        pos, norm = frag;
+        @actors[idx].set_position pos
+      }
+    else
+      rebuild_scene
+    end
+  end
+
   def reload_shader(type, &block)
     name = "SH#{Time.now().to_i}#{rand(1000)}"
     editor = {
@@ -261,6 +278,8 @@ class Runtime
   end
 
   def rebuild_arrangement
+    @engine.arrangement.shutdown if @engine.arrangement.respond_to?(:shutdown)
+
     template = Element.find("#arrangementType").value
     options = Element.find("##{template}Options input").inject({}) {|m,e| m[e.id] = e.value; m }
 
@@ -278,11 +297,18 @@ class Runtime
       end,
       :dnSocket => lambda do
         url = options["dnSocketURL"]
-        ArrangementWebsocketAdapter.new url
+        adapter = ArrangementWebsocketAdapter.new url
+        adapter.restart_connection
+        adapter
       end
     }
     new_arrangement = templates[template.to_sym].call(options)
-    if new_arrangement.nil? || new_arrangement.empty?
+    if new_arrangement.respond_to?(:on_ready)
+      new_arrangement.on_data_received do |arrangement|
+        @engine.arrangement = arrangement
+        update_arrangement
+      end
+    elsif new_arrangement.nil? || new_arrangement.empty?
       `console.log('Template did not produce a valid arrangement.')`
     else
       @engine.arrangement = new_arrangement
@@ -321,10 +347,18 @@ class Runtime
   def save
     geom, frag, pixel = get_shader_code
 
+    geom_state, frag_state, pixel_state = [:geometry, :fragment, :pixel].map do |type|
+      shader = @engine.send("#{type}_shader".to_s)
+      shader.shader.uniform_state unless shader.nil?
+    end
+
     zip = JSZip::ZipFile.new
     zip.file("geometry.sdsl", geom)
+    zip.file("geometry.state", geom_state.to_json) unless geom_state.nil?
     zip.file("fragment.sdsl", frag)
+    zip.file("fragment.state", frag_state.to_json) unless frag_state.nil?
     zip.file("pixel.sdsl", pixel)
+    zip.file("pixel.state", pixel_state.to_json) unless pixel_state.nil?
     blob = zip.to_blob
     filename = "sdslProgram#{Time.now.strftime("%d%m%Y%H%M%S")}.zip"
     `window.saveAs(blob, filename)`

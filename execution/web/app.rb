@@ -39,8 +39,8 @@ class App < Sinatra::Base
       begin
         nlse = NLSL::Compiler::Transformer.new(type).transform(parsed)
         ruby = NLSE::Target::Ruby::Transformer.new(params[:name]).transform(nlse)
-        #File.open("debug.yaml", "w") {|f| f.puts nlse.to_yaml }
-        #File.open("debug.rb", "w") {|f| f.puts ruby }
+        File.open("debug.yaml", "w") {|f| f.puts nlse.to_yaml }
+        File.open("debug.rb", "w") {|f| f.puts ruby }
 
         status 200
         body Opal.compile(ruby)
