@@ -7,7 +7,12 @@ class ArrangementWebsocketAdapter < SimpleDelegator
     super([])
     @url = url
     @connection = nil
+    @connected = false
     @on_data_received = nil
+
+    @buffer_initialized = false
+    @buffer = nil
+    @view = nil
   end
 
   def restart_connection
@@ -16,7 +21,36 @@ class ArrangementWebsocketAdapter < SimpleDelegator
     %x{
     self.connection.binaryType = 'arraybuffer';
     self.connection.onmessage = function(evt) { #{on_message(`evt`)} }
+    self.connection.onopen = function(evt) { self.connected = true; }
+    self.connection.onclose = function(evt) { self.connected = false; }
     }
+  end
+
+  def dump_shader_computation(fragment, pixel)
+    return unless @connected
+    return if `self.view == undefined`
+
+    has_pixels = fragment.length == pixel.length
+    fragmentCount = fragment.length
+    pixelCount = (has_pixels ? pixel.first.length : 0)
+    length = fragment.length + (fragment.length * (3 * pixelCount))
+    init_buffer(length)
+    i = 0
+    j = 0
+    %x{
+      for(var i = 0; i < fragmentCount; i++) {
+          var offset = i * (1 + 3 * pixelCount);
+
+          self.view[offset + 0] = #{fragment[i][0]};
+          for(j = 0; j < pixelCount; j++) {
+            self.view[offset + ((1 + j) * 3) + 0] = #{pixel[i][j].x};
+            self.view[offset + ((1 + j) * 3) + 1] = #{pixel[i][j].y};
+            self.view[offset + ((1 + j) * 3) + 2] = #{pixel[i][j].z};
+          }
+        }
+      }
+
+    `self.connection.send(self.view)`
   end
 
   def shutdown
@@ -28,11 +62,7 @@ class ArrangementWebsocketAdapter < SimpleDelegator
   end
 
   def respond_to?(name)
-    if name == :on_ready or name == :shutdown
-      true
-    else
-      super(name)
-    end
+    name == :on_ready or name == :shutdown or name == :dump_shader_computation or super(name)
   end
 
   def [](idx)
@@ -58,5 +88,13 @@ class ArrangementWebsocketAdapter < SimpleDelegator
       @on_data_received.call(self)
     end
   end
+
+  def init_buffer(length)
+    return if @buffer_initialized and length == `view.length`
+
+    @buffer = `new ArrayBuffer(length * 4)`
+    @view = `new Float32Array(self.buffer)`
+  end
+
 
 end

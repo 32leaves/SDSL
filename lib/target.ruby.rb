@@ -593,7 +593,7 @@ module NLSE
         end
 
         def compute_fragment_resolution
-          return NLSE::Target::Ruby::Runtime::Vec3.new(0, 0, 0) if arrangement.nil?
+          return NLSE::Target::Ruby::Runtime::Vec3.new(0, 0, 0) if arrangement.nil? or arrangement.empty?
 
           lo,hi = arrangement.inject([ [ nil, nil, nil ], [ nil, nil, nil ] ]) do |m, e|
             lo, hi = m

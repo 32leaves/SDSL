@@ -10,6 +10,7 @@ require 'DatGUI'
 require 'ACE'
 require 'sampler_websocket_adapter'
 require 'arrangement_websocket_adapter'
+require 'websocket_output'
 require 'js_zip'
 require 'js_unzip'
 require 'target.ruby'
@@ -155,6 +156,7 @@ class Runtime
         @actors[idx].set_color pixel[idx].first unless pixel[idx].nil?
       }
 
+      @engine.arrangement.dump_shader_computation(fragment, pixel) if @engine.arrangement.respond_to?(:dump_shader_computation)
       errorbox.hide
     rescue => e
       shader_type = e.class.name.split("::").last.gsub("ShaderRuntimeException", "").downcase
@@ -186,7 +188,8 @@ class Runtime
     @engine.arrangement = @engine.arrangement
 
     offset = @engine.fragment_resolution * -0.5
-    actor_arrangement = @engine.arrangement.map {|e| p,n=e; [((p / @engine.fragment_resolution) - 0.5) * 20, n] }
+    actor_arrangement = @engine.arrangement.map {|e| p,n=e; [p + offset, n] }
+    #actor_arrangement = @engine.arrangement.map {|e| p,n=e; [((p / @engine.fragment_resolution) - 0.5) * 20, n] }
     if actor_arrangement.length == @actors.length
       actor_arrangement.each_with_index {|frag, idx|
         pos, norm = frag;
