@@ -29,6 +29,7 @@ class ShaderInspector
     end
     shader.shader.known_uniforms.each do |name|
       value = shader.shader.send(name)
+      value = "%.3f" % value if value.is_a? Numeric
       value = value.to_html rescue value.to_s
       table.append "<tr><td class=\"name\">#{name}</td><td>#{value}</td></tr>"
     end

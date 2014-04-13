@@ -59,7 +59,7 @@ module NLSE
           end
 
           def to_html
-            to_a.map {|e| "<span class=\"comp\">#{e}</span>" }.join
+            to_a.map {|e| "%.2f" % e }.map {|e| "<span class=\"comp\">#{e}</span>" }.join
           end
         end
         class Vec3
@@ -125,7 +125,7 @@ module NLSE
 
 
           def to_html
-            to_a.map {|e| "<span class=\"comp\">#{e}</span>" }.join
+            to_a.map {|e| "%.2f" % e }.map {|e| "<span class=\"comp\">#{e}</span>" }.join
           end
 
         end
@@ -201,7 +201,7 @@ module NLSE
           end
 
           def to_html
-            to_a.join(" ")
+            to_a.map {|e| "%.2f" % e }.map {|e| "<span class=\"comp\">#{e}</span>" }.join
           end
 
         end
