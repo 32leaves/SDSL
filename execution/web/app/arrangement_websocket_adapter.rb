@@ -33,19 +33,20 @@ class ArrangementWebsocketAdapter < SimpleDelegator
     has_pixels = fragment.length == pixel.length
     fragmentCount = fragment.length
     pixelCount = (has_pixels ? pixel.first.length : 0)
-    length = fragment.length + (fragment.length * (3 * pixelCount))
+    length = fragment.length + (fragment.length * (4 * pixelCount))
     init_buffer(length)
     i = 0
     j = 0
     %x{
       for(var i = 0; i < fragmentCount; i++) {
-          var offset = i * (1 + 3 * pixelCount);
+          var offset = i * (1 + 4 * pixelCount);
 
           self.view[offset + 0] = #{fragment[i][0]};
           for(j = 0; j < pixelCount; j++) {
-            self.view[offset + ((1 + j) * 3) + 0] = #{pixel[i][j].x};
-            self.view[offset + ((1 + j) * 3) + 1] = #{pixel[i][j].y};
-            self.view[offset + ((1 + j) * 3) + 2] = #{pixel[i][j].z};
+            self.view[offset + 1 + (j * 4) + 0] = #{pixel[i][j].x};
+            self.view[offset + 1 + (j * 4) + 1] = #{pixel[i][j].y};
+            self.view[offset + 1 + (j * 4) + 2] = #{pixel[i][j].z};
+            self.view[offset + 1 + (j * 4) + 3] = #{pixel[i][j].w};
           }
         }
       }
